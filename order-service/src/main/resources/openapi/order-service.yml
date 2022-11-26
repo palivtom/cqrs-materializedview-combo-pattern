@@ -1,0 +1,266 @@
+openapi: 3.0.3
+info:
+  description: Open API specification for Order service
+  version: 0.0.1
+  title: Order Api Service Specification
+  contact:
+    name: JAVA developer
+    email: palivtom@fel.cvut.cz
+tags:
+  - name: Order
+paths:
+  /orders:
+    get:
+      tags:
+        - Order
+      summary: Get orders
+      operationId: getOrders
+      parameters:
+        - in: query
+          required: true
+          name: userSessionId
+          description: Autentizatuion stub
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns list of feedbacks
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Orders'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    post:
+      tags:
+        - Order
+      summary: Create new order
+      operationId: createOrder
+      parameters:
+        - in: query
+          required: true
+          name: userSessionId
+          description: Autentizatuion stub
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '201':
+          description: Returns created order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /orders/{orderId}:
+    get:
+      tags:
+        - Order
+      summary: Get order by id
+      operationId: getOrderById
+      parameters:
+        - in: query
+          required: true
+          name: userSessionId
+          description: Autentizatuion stub
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          required: true
+          name: orderId
+          description: Id of searched order
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    put:
+      tags:
+        - Order
+      summary: Update order by id
+      operationId: updateOrder
+      parameters:
+        - in: query
+          required: true
+          name: userSessionId
+          description: Autentizatuion stub
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          required: true
+          name: orderId
+          description: Id of updating order
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      responses:
+        '200':
+          description: Returns updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Order
+      summary: Cancel order by id
+      operationId: cancelOrder
+      parameters:
+        - in: query
+          required: true
+          name: userSessionId
+          description: Autentizatuion stub
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          required: true
+          name: orderId
+          description: Id of searched order
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: Order has been cancelled
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  responses:
+    BadRequest:
+      description: Indicates a nonspecific client error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+    Unauthorized:
+      description:
+        Unauthorized request - sent when the client either provided invalid
+        credentials
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+  schemas:
+    Exception:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        title:
+          type: string
+          example: Wrong input parameter
+        message:
+          type: string
+          example:
+            Wrong parameter for endpoint '/example/endpoint', wrong endpointId value.
+
+    Orders:
+      type: object
+      properties:
+        feedbacks:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+
+    Order:
+      type: object
+      required:
+        - content
+        - teacherOnly
+        - anonymous
+      properties:
+        id:
+          readOnly: true
+          type: integer
+          format: int64
+        authorId:
+          readOnly: true
+          type: integer
+          format: int32
+        createdAt:
+          $ref: '#/components/schemas/DateTime'
+        updatedAt:
+          $ref: '#/components/schemas/DateTime'
+        deletedAt:
+          $ref: '#/components/schemas/DateTime'
+
+    DateTime:
+      type: string
+      readOnly: true
+      example: 2000-10-31T01:30:00.000-05:00
