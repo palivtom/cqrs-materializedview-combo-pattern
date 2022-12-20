@@ -111,47 +111,6 @@ services:
     healthcheck:
       test: "wget --quiet --tries=1 --spider http://localhost:8083 || exit 1"
 
-#  ksqldb-server:
-#    image: confluentinc/cp-ksqldb-server:7.3.0
-#    restart: unless-stopped
-#    depends_on:
-#      - broker
-#      - schema-registry
-#    ports:
-#      - "8088:8088"
-#    environment:
-#      KSQL_LISTENERS: http://0.0.0.0:8088
-#      KSQL_BOOTSTRAP_SERVERS: broker:9092
-#      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
-#      KSQL_KSQL_CONNECT_URL: http://kafka-connect:8083
-#      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
-#      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
-#    healthcheck:
-#      test: "nc -z localhost 8088 || exit 1"
-#
-#  ksqldb-cli:
-#    image: confluentinc/cp-ksqldb-cli:7.3.0
-#    depends_on:
-#      - broker
-#      - kafka-connect
-#      - ksqldb-server
-#    entrypoint: /bin/sh
-#    tty: true
-
-#  kafka-connect-ui:
-#    image: landoop/kafka-connect-ui:0.9.7
-#    container_name: kafka-connect-ui
-#    restart: unless-stopped
-#    depends_on:
-#      - kafka-connect
-#    ports:
-#      - "8086:8000"
-#    environment:
-#      CONNECT_URL: http://kafka-connect:8083
-#      PROXY: "true"
-#    healthcheck:
-#      test: "wget --quiet --tries=1 --spider http://localhost:8000 || exit 1"
-
   kafka-topics-ui:
     image: landoop/kafka-topics-ui:0.9.4
     container_name: kafka-topics-ui
