@@ -4,51 +4,177 @@ version: '3.8'
 services:
 #  ## SPRING BOOT APPS ##
 #  order-service:
-#    container_name: order-service
 #    build: ./order-service
 #    depends_on:
+#      - broker
 #      - pg-database
 #
 #  order-updater-service:
-#    container_name: order-updater-service
 #    build: ./order-updater-service
 #    depends_on:
-#      - kafka-node
+#      - broker
 #      - pg-database
 
   ## DATABASE ##
   pg-database:
-    container_name: pg-database
-    image: postgres:15-alpine
+    build: docker/postgres
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_USER: postgres
       POSTGRES_MULTIPLE_DATABASES: order-service, order-updater-service
     ports:
       - "5432:5432"
-    volumes:
-      - ./database/init_databases.sh:/docker-entrypoint-initdb.d/init_databases.sh
-      - ./database/pgdata:/var/lib/postgresql/data
 
-#  ## Kafka ##
-#  zookeeper:
-#    image: confluentinc/cp-zookeeper:latest
-#    environment:
-#      ZOOKEEPER_CLIENT_PORT: 2181
-#      ZOOKEEPER_TICK_TIME: 2000
-#    ports:
-#      -  "22181:2181"
-#
-#  kafka:
-#    image: confluentinc/cp-kafka:latest
+  ## Kafka ##
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.3.0
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.3.0
+    restart: unless-stopped
+    depends_on:
+     - zookeeper
+    ports:
+      - "29092:29092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1 # \ ksqldb-server requires these properties
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1            # /
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 100
+    healthcheck:
+      test: "nc -z localhost 9092 || exit 1"
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.3.0
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+      - broker
+    ports:
+      - "8081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: PLAINTEXT://broker:9092
+    healthcheck:
+      test: "wget --quiet --tries=1 --spider http://localhost:8081 || exit 1"
+
+  kafka-rest-proxy:
+    image: confluentinc/cp-kafka-rest:7.3.0
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+      - broker
+    ports:
+      - "8082:8082"
+    environment:
+      KAFKA_REST_HOST_NAME: kafka-rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: PLAINTEXT://broker:9092
+      KAFKA_REST_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_REST_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      KAFKA_REST_CONSUMER_REQUEST_TIMEOUT_MS: 30000
+    healthcheck:
+      test: "wget --quiet --tries=1 --spider http://localhost:8082 || exit 1"
+
+  kafka-connect:
+    build: docker/kafka-connect
+    restart: unless-stopped
+    depends_on:
+      - broker
+      - schema-registry
+    ports:
+      - "8083:8083"
+    environment:
+      CONNECT_BOOTSTRAP_SERVERS: broker:9092
+      CONNECT_REST_ADVERTISED_HOST_NAME: kafka-connect
+      CONNECT_GROUP_ID: kafka-connect
+      CONNECT_CONFIG_STORAGE_TOPIC: kafka-connect-configs
+      CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_OFFSET_STORAGE_TOPIC: kafka-connect-offsets
+      CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_STATUS_STORAGE_TOPIC: kafka-connect-statuses
+      CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: 1
+      CONNECT_KEY_CONVERTER: io.confluent.connect.json.JsonSchemaConverter
+      CONNECT_KEY_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_VALUE_CONVERTER: io.confluent.connect.json.JsonSchemaConverter
+      CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONNECT_PLUGIN_PATH: /usr/share/confluent-hub-components
+      CONNECT_LOG4J_LOGGERS: org.reflections=ERROR
+    healthcheck:
+      test: "wget --quiet --tries=1 --spider http://localhost:8083 || exit 1"
+
+#  ksqldb-server:
+#    image: confluentinc/cp-ksqldb-server:7.3.0
+#    restart: unless-stopped
 #    depends_on:
-#      - zookeeper
+#      - broker
+#      - schema-registry
 #    ports:
-#      - "29092:29092"
+#      - "8088:8088"
 #    environment:
-#      KAFKA_BROKER_ID: 1
-#      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-#      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
-#      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-#      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-#      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+#      KSQL_LISTENERS: http://0.0.0.0:8088
+#      KSQL_BOOTSTRAP_SERVERS: broker:9092
+#      KSQL_KSQL_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+#      KSQL_KSQL_CONNECT_URL: http://kafka-connect:8083
+#      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+#      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+#    healthcheck:
+#      test: "nc -z localhost 8088 || exit 1"
+#
+#  ksqldb-cli:
+#    image: confluentinc/cp-ksqldb-cli:7.3.0
+#    depends_on:
+#      - broker
+#      - kafka-connect
+#      - ksqldb-server
+#    entrypoint: /bin/sh
+#    tty: true
+
+#  kafka-connect-ui:
+#    image: landoop/kafka-connect-ui:0.9.7
+#    container_name: kafka-connect-ui
+#    restart: unless-stopped
+#    depends_on:
+#      - kafka-connect
+#    ports:
+#      - "8086:8000"
+#    environment:
+#      CONNECT_URL: http://kafka-connect:8083
+#      PROXY: "true"
+#    healthcheck:
+#      test: "wget --quiet --tries=1 --spider http://localhost:8000 || exit 1"
+
+  kafka-topics-ui:
+    image: landoop/kafka-topics-ui:0.9.4
+    container_name: kafka-topics-ui
+    restart: unless-stopped
+    depends_on:
+      - kafka-rest-proxy
+    ports:
+      - "8085:8000"
+    environment:
+      KAFKA_REST_PROXY_URL: http://kafka-rest-proxy:8082
+      PROXY: "true"
+    healthcheck:
+      test: "wget --quiet --tries=1 --spider http://localhost:8000 || exit 1"
+
+  schema-registry-ui:
+    image: landoop/schema-registry-ui:0.9.5
+    restart: unless-stopped
+    depends_on:
+      - schema-registry
+    ports:
+      - "8084:8000"
+    environment:
+      SCHEMAREGISTRY_URL: http://schema-registry:8081
+      PROXY: "true"
+    healthcheck:
+      test: "wget --quiet --tries=1 --spider http://localhost:8000 || exit 1"

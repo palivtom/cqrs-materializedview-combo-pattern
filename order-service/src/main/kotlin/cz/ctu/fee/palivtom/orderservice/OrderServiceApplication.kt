@@ -1,7 +1,5 @@
 package cz.ctu.fee.palivtom.orderservice
 
-import cz.ctu.fee.palivtom.orderservice.model.command.Order
-import cz.ctu.fee.palivtom.orderservice.repository.command.OrderRepository
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
@@ -9,26 +7,27 @@ import org.springframework.boot.runApplication
 class OrderServiceApplication
 
 fun main(args: Array<String>) {
-	val repo = runApplication<OrderServiceApplication>(*args).getBean(OrderRepository::class.java)
+	val app = runApplication<OrderServiceApplication>(*args)
 
-	val a = repo.save(
-		Order(
-			shippingAddress = cz.ctu.fee.palivtom.orderservice.model.command.ShippingAddress(
-				street = "Street",
-				city = "City",
-				zipCode = "ZipCode",
-				country = "Country"
-			),
-			userId = 1L
-		)
-	)
+//	val orderRepo = app.getBean(OrderRepository::class.java)
+//	val shippAddrRepo = app.getBean(ShippingAddressRepository::class.java)
+//
+//	val order = orderRepo.save(
+//		Order(
+//			userId = 1L
+//		)
+//	)
+//
+//	val shippAddr = shippAddrRepo.save(
+//		ShippingAddress(
+//			street = "street",
+//			city = "city",
+//			zipCode = "zipCode",
+//			country = "country",
+//			order = order
+//		)
+//	)
+//
+//	println(shippAddr)
 
-	val b = repo.save(
-		Order(
-			userId = 1L
-		)
-	)
-
-	println(a.toString())
-	println(b.toString())
 }

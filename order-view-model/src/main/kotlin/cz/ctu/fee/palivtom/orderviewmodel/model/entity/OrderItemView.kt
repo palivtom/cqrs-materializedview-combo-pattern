@@ -1,4 +1,4 @@
-package cz.ctu.fee.palivtom.orderservice.model.query
+package cz.ctu.fee.palivtom.orderviewmodel.model.entity
 
 import javax.persistence.*
 
@@ -9,9 +9,12 @@ open class OrderItemView(
     @Column(name = "id", nullable = false)
     open var id: Long? = null,
 
+    @Column(name = "product_id", nullable = false)
     open var productId: Long,
 
+    @Column(name = "quantity", nullable = false)
     open var quantity: Int,
 
-    open var shippingPrice: Double
+    @Column(name = "shipping_price", nullable = false)
+    open var shippingPrice: Double,
 )

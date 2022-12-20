@@ -7,7 +7,7 @@ open class OrderItem(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
-    open var id: Long? = null,
+    open var id: Long = 0,
 
     @Column(name = "product_id", nullable = false)
     open var productId: Long,

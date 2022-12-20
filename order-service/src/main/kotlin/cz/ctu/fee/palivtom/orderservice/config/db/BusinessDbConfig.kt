@@ -3,6 +3,7 @@ package cz.ctu.fee.palivtom.orderservice.config.db
 import com.zaxxer.hikari.HikariDataSource
 import org.flywaydb.core.Flyway
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
@@ -25,10 +26,15 @@ import javax.persistence.EntityManagerFactory
     entityManagerFactoryRef = "businessEntityManagerFactory",
     transactionManagerRef = "businessTransactionManager"
 )
-class BusinessDbConfig {
+class BusinessDbConfig(
+    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor
+) {
+
+    @Value("\${spring.jpa.hibernate.ddl-auto:none}")
+    private lateinit var ddlAuto: String
 
     @Bean
-    @ConfigurationProperties("spring.command-datasource")
+    @ConfigurationProperties("spring.business-datasource")
     fun businessDataSourceProps(): DataSourceProperties {
         return DataSourceProperties()
     }
@@ -44,7 +50,7 @@ class BusinessDbConfig {
     fun businessFlywayMigration() {
         Flyway.configure()
             .dataSource(businessDataSource())
-            .locations("classpath:db/migration/command")
+            .locations("classpath:db/migration/business")
             .load()
             .migrate()
     }
@@ -58,7 +64,8 @@ class BusinessDbConfig {
             .persistenceUnit("business")
             .properties(
                 mapOf(
-                    "hibernate.hbm2ddl.auto" to "create"
+                    "hibernate.hbm2ddl.auto" to ddlAuto,
+                    "hibernate.ejb.interceptor" to hibernateTransactionInterceptor
                 )
             )
             .build()

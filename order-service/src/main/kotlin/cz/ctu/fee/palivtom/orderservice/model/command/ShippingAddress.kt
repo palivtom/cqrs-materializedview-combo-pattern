@@ -6,8 +6,8 @@ import javax.persistence.*
 open class ShippingAddress(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    open var id: Long? = null,
+    @Column(name = "id")
+    open val id: Long = 0,
 
     @Column(name = "street", nullable = false)
     open var street: String,
@@ -19,9 +19,11 @@ open class ShippingAddress(
     open var zipCode: String,
 
     @Column(name = "country", nullable = false)
-    open var country: String
+    open var country: String,
 
-
+    @OneToOne(optional = false)
+    @JoinColumn(name="order_id")
+    open var order: Order? = null
 ) {
     override fun toString(): String {
         return "ShippingAddress(id=$id, street='$street', city='$city', zipCode='$zipCode', country='$country')"

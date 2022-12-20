@@ -2,4 +2,4 @@
 
 / Google drive
 *.ini
-/database/pgdata/
+/docker/postgres/pgdata/
