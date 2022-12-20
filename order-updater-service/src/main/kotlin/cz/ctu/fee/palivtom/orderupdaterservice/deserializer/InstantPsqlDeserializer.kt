@@ -6,9 +6,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import java.time.Instant
 import java.util.concurrent.TimeUnit
 
-class InstantNanoDeserializer(vc: Class<*>?) : StdDeserializer<Instant>(vc) {
-    constructor() : this(null)
-
+class InstantPsqlDeserializer(vc: Class<*>? = null) : StdDeserializer<Instant>(vc) {
     override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Instant {
         return Instant.ofEpochSecond(
             0L,
@@ -17,5 +15,4 @@ class InstantNanoDeserializer(vc: Class<*>?) : StdDeserializer<Instant>(vc) {
             )
         )
     }
-
 }
