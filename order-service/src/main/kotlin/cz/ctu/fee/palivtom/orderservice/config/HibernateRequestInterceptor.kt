@@ -12,7 +12,7 @@ class HibernateRequestInterceptor(
     private val transactionInterceptor: HibernateTransactionInterceptor
 ) : WebRequestInterceptor {
     override fun preHandle(request: WebRequest) {
-        transactionInterceptor.initialize()
+        // nothing to do
     }
 
     override fun postHandle(request: WebRequest, model: ModelMap?) {

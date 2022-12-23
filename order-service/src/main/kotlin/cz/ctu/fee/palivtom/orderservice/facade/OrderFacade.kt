@@ -23,7 +23,6 @@ class OrderFacade(
 
         commandBlocker.blockUntilViewUpdate(
             hibernateTransactionInterceptor.getTransactionId(),
-            hibernateTransactionInterceptor.getQueryCount(),
             3000
         )
 
@@ -36,7 +35,6 @@ class OrderFacade(
 
         commandBlocker.blockUntilViewUpdate(
             hibernateTransactionInterceptor.getTransactionId(),
-            hibernateTransactionInterceptor.getQueryCount(),
             3000
         )
 
@@ -59,7 +57,6 @@ class OrderFacade(
 
         commandBlocker.blockUntilViewUpdate(
             hibernateTransactionInterceptor.getTransactionId(),
-            hibernateTransactionInterceptor.getQueryCount(),
             3000
         )
 

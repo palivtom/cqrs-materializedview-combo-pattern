@@ -1,7 +1,7 @@
 package cz.ctu.fee.palivtom.orderservice.config.kafka
 
-import com.fasterxml.jackson.databind.JsonNode
-import cz.ctu.fee.palivtom.orderviewmodel.model.kafka.UpdateEvent
+import cz.ctu.fee.palivtom.orderviewmodel.model.kafka.TransactionStatusKey
+import cz.ctu.fee.palivtom.orderviewmodel.model.kafka.TransactionStatusValue
 import cz.ctu.fee.palivtom.orderviewmodel.utils.OrderKafkaTopics
 import io.confluent.kafka.serializers.json.KafkaJsonSchemaDeserializerConfig
 import org.apache.kafka.clients.admin.NewTopic
@@ -21,12 +21,12 @@ class KafkaConfig(
 ) {
 
     @Bean
-    fun updaterTopic(): NewTopic {
-        return TopicBuilder.name(OrderKafkaTopics.UPDATER_EVENT).build()
+    fun transactionStatusTopic(): NewTopic {
+        return TopicBuilder.name(OrderKafkaTopics.EVENT_TRANSACTION_STATUS).build()
     }
 
     @Bean
-    fun kafkaListenerContainerFactory(): ConcurrentKafkaListenerContainerFactory<JsonNode, UpdateEvent> {
+    fun transactionStatusFactory(): ConcurrentKafkaListenerContainerFactory<TransactionStatusKey, TransactionStatusValue> {
         return createConsumerContainerFactory(true)
     }
 

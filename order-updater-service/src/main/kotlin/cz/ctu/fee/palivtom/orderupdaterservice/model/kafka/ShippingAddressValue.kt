@@ -2,7 +2,7 @@ package cz.ctu.fee.palivtom.orderupdaterservice.model.kafka
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-data class ShippingAddressDto(
+data class ShippingAddressValue(
     @JsonProperty("id")
     var id: Long = 0,
 

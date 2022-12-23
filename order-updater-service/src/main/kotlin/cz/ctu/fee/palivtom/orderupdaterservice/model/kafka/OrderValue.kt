@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize
 import cz.ctu.fee.palivtom.orderupdaterservice.deserializer.InstantPsqlDeserializer
 import java.time.Instant
 
-data class OrderDto(
+data class OrderValue(
     @JsonProperty("id")
     var id: Long,
 
