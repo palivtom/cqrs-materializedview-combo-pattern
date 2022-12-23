@@ -2,7 +2,7 @@ package cz.ctu.fee.palivtom.orderservice.facade
 
 import cz.ctu.fee.palivtom.orderservice.config.db.HibernateTransactionInterceptor
 import cz.ctu.fee.palivtom.orderservice.model.OrderDto
-import cz.ctu.fee.palivtom.orderservice.service.command.interfaces.CommandBlocker
+import cz.ctu.fee.palivtom.orderservice.service.CommandBlocker
 import cz.ctu.fee.palivtom.orderservice.service.command.interfaces.OrderService
 import cz.ctu.fee.palivtom.orderservice.service.querry.interfaces.OrderViewService
 import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderMapper.toDto
@@ -19,26 +19,26 @@ class OrderFacade(
 ) {
 
     fun createOrder(toCreate: OrderDto): OrderDto {
-        val order = orderService.createOrder(toCreate.toEntity())
+        val orderId = orderService.createOrder(toCreate.toEntity())
 
         commandBlocker.blockUntilViewUpdate(
             hibernateTransactionInterceptor.getTransactionId(),
             3000
         )
 
-        return orderViewService.getOrderView(order.id)
+        return orderViewService.getOrderView(orderId)
             .toCommandEntity().toDto()
     }
 
     fun cancelOrder(orderId: Long): OrderDto {
-        val order = orderService.cancelOrder(orderId)
+        val orderId = orderService.cancelOrder(orderId)
 
         commandBlocker.blockUntilViewUpdate(
             hibernateTransactionInterceptor.getTransactionId(),
             3000
         )
 
-        return orderViewService.getOrderView(order.id)
+        return orderViewService.getOrderView(orderId)
             .toCommandEntity().toDto()
     }
 
@@ -53,14 +53,14 @@ class OrderFacade(
     }
 
     fun updateOrder(orderId: Long, orderDto: OrderDto): OrderDto {
-        val order = orderService.updateOrder(orderId, orderDto.toEntity())
+        val orderId = orderService.updateOrder(orderId, orderDto.toEntity())
 
         commandBlocker.blockUntilViewUpdate(
             hibernateTransactionInterceptor.getTransactionId(),
             3000
         )
 
-        return orderViewService.getOrderView(order.id)
+        return orderViewService.getOrderView(orderId)
             .toCommandEntity().toDto()
     }
 }

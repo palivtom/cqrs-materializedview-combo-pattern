@@ -1,6 +1,5 @@
 package cz.ctu.fee.palivtom.orderservice.service
 
-import cz.ctu.fee.palivtom.orderservice.service.command.interfaces.CommandBlocker
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.Condition

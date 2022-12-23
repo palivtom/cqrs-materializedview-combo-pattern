@@ -3,8 +3,9 @@ package cz.ctu.fee.palivtom.orderupdaterservice.consumer
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
+import cz.ctu.fee.palivtom.orderupdaterservice.model.event.*
 import cz.ctu.fee.palivtom.orderupdaterservice.model.kafka.*
-import cz.ctu.fee.palivtom.orderupdaterservice.service.EventTransactionService
+import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.EventTransactionService
 import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener
@@ -22,25 +23,86 @@ class TableEventConsumer(
     private fun orderConsumer(message: ConsumerRecord<JsonNode, JsonNode>) {
         logger.debug { "Received message: $message" }
 
-        val debeziumOrderValue = objectMapper.convertValue(
+        val value = objectMapper.convertValue(
             message.value(),
             object : TypeReference<DebeziumPsqlWrapperValue<OrderValue>>() {}
         )
-        eventTransactionService.addEventToTransaction(
-            debeziumOrderValue as DebeziumPsqlWrapperValue<Any>
-        )
+
+        val event = when (value.operation) {
+            DebeziumPsqlWrapperValue.Operation.CREATE -> {
+                CreateOrderEvent(
+                    orderId = value.after!!.id,
+                    userId = value.after.userId!!,
+                    createdAt = value.after.createdAt!!,
+                    eventMetadata =  value.toEventMetadata()
+                )
+            }
+
+            DebeziumPsqlWrapperValue.Operation.UPDATE -> {
+                UpdateOrderEvent(
+                    orderId = value.after!!.id,
+                    userId = value.after.userId!!,
+                    updatedAt = value.after.updatedAt,
+                    deletedAt = value.after.deletedAt,
+                    eventMetadata = value.toEventMetadata()
+                )
+            }
+
+            else -> {
+                logger.warn { "Unsupported operation: ${value.operation}" }
+                return
+            }
+        }
+
+        eventTransactionService.addEventToTransaction(event)
     }
 
     @KafkaListener(topics = ["\${kafka.topics.order-service-db.shipping_addresses}"])
     private fun shippingAddressConsumer(message: ConsumerRecord<JsonNode, JsonNode>) {
         logger.debug { "Received message: $message" }
 
-        val debeziumShippingAddressValue = objectMapper.convertValue(
+        val value = objectMapper.convertValue(
             message.value(),
             object : TypeReference<DebeziumPsqlWrapperValue<ShippingAddressValue>>() {}
         )
-        eventTransactionService.addEventToTransaction(
-            debeziumShippingAddressValue as DebeziumPsqlWrapperValue<Any>
-        )
+
+        val event = when (value.operation) {
+            DebeziumPsqlWrapperValue.Operation.CREATE -> {
+                CreateShippingAddressEvent(
+                    shippingAddressId = value.after!!.id,
+                    orderId = value.after.orderId!!,
+                    country = value.after.country!!,
+                    city = value.after.city!!,
+                    zipCode = value.after.zipCode!!,
+                    street = value.after.street!!,
+                    eventMetadata = value.toEventMetadata()
+                )
+            }
+
+            DebeziumPsqlWrapperValue.Operation.UPDATE -> {
+                UpdateShippingAddressEvent(
+                    orderId = value.after!!.orderId!!,
+                    country = value.after.country!!,
+                    city = value.after.city!!,
+                    zipCode = value.after.zipCode!!,
+                    street = value.after.street!!,
+                    eventMetadata = value.toEventMetadata()
+                )
+            }
+
+            DebeziumPsqlWrapperValue.Operation.DELETE -> {
+                DeleteShippingAddressEvent(
+                    shippingAddressId = value.before!!.id,
+                    eventMetadata = value.toEventMetadata()
+                )
+            }
+
+            else -> {
+                logger.warn { "Unsupported operation: ${value.operation}" }
+                return
+            }
+        }
+
+        eventTransactionService.addEventToTransaction(event)
     }
 }

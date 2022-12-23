@@ -15,6 +15,9 @@ object OrderMapper {
     fun Order.toDto() = OrderDto(
         id = id,
         userId = userId,
+        createdAt = createdAt.epochSecond,
+        updatedAt = updatedAt?.epochSecond,
+        deletedAt = deletedAt?.epochSecond,
         shippingAddress = shippingAddress?.toDto()
     )
 

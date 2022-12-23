@@ -2,7 +2,7 @@ package cz.ctu.fee.palivtom.orderupdaterservice.consumer
 
 import com.fasterxml.jackson.databind.JsonNode
 import cz.ctu.fee.palivtom.orderupdaterservice.model.kafka.*
-import cz.ctu.fee.palivtom.orderupdaterservice.service.EventTransactionService
+import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.EventTransactionService
 import mu.KotlinLogging
 import org.apache.kafka.clients.consumer.ConsumerRecord
 import org.springframework.kafka.annotation.KafkaListener

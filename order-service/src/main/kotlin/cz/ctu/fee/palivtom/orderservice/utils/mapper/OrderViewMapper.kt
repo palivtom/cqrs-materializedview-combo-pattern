@@ -8,6 +8,9 @@ object OrderViewMapper {
     fun OrderView.toCommandEntity() = Order(
         id = id,
         userId = userId!!,
+        createdAt = createdAt!!,
+        updatedAt = updatedAt,
+        deletedAt = deletedAt,
         shippingAddress = country?.let {
             ShippingAddress(
                 country = country!!,

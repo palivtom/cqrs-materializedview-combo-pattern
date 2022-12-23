@@ -212,6 +212,19 @@ components:
           format: int64
         shippingAddress:
           $ref: '#/components/schemas/ShippingAddress'
+        createdAt:
+          readOnly: true
+          type: integer
+          format: int64
+        updatedAt:
+          readOnly: true
+          type: integer
+          format: int64
+        deletedAt:
+          readOnly: true
+          type: integer
+          format: int64
+          description: If order is canceled, this field is filled with date and time of canceling
 
     DateTime:
       type: string

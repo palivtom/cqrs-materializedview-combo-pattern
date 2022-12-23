@@ -1,4 +1,4 @@
-package cz.ctu.fee.palivtom.orderservice.service.command.interfaces
+package cz.ctu.fee.palivtom.orderservice.service
 
 interface CommandBlocker {
     fun blockUntilViewUpdate(txId: String, timeout: Long)

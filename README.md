@@ -13,7 +13,6 @@ docker compose up --build -d
 curl -i -X POST -H "Content-Type:application/json" http://localhost:8083/connectors/ -d @config/connectors/register-postgres.json
 ```
 
-3. Excecute the command to set up the ksql stream
-```bash
+3. Application is available on http://localhost:8080
 
-```
+4. Swagger open api specification is in ./order-service/src/main/resources/openapi/order-service.yml

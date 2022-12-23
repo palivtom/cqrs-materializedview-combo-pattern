@@ -14,8 +14,10 @@ class OrdersServiceImpl(
     private val shippingAddressRepository: ShippingAddressRepository
 ) : OrderService {
 
+    // TODO create shipping address service
+
     @Transactional
-    override fun createOrder(toCreate: Order): Order {
+    override fun createOrder(toCreate: Order): Long {
         val shippingAddr = toCreate.shippingAddress // todo redo this
 
         toCreate.shippingAddress = null
@@ -29,33 +31,50 @@ class OrdersServiceImpl(
             )
         }
 
-        return orderRepository.getReferenceById(order.id)
+        return order.id
     }
 
     @Transactional
-    override fun cancelOrder(orderId: Long): Order {
-        var order = orderRepository.getReferenceById(orderId)
-
-        order = orderRepository.save(
-            order.apply {
-                this.removedAt = Instant.now()
+    override fun cancelOrder(orderId: Long): Long {
+        val order = orderRepository.save(
+            orderRepository.getReferenceById(orderId).apply {
+                this.deletedAt = Instant.now()
             }
         )
 
-        return order
+        return order.id
     }
 
     @Transactional
-    override fun updateOrder(orderId: Long, toUpdate: Order): Order {
-        var order = orderRepository.getReferenceById(orderId)
+    override fun updateOrder(orderId: Long, toUpdate: Order): Long {
+        val shippingAddrToUpdate = toUpdate.shippingAddress // todo redo this
 
-        order = orderRepository.save(
-            order.apply {
-                this.shippingAddress = toUpdate.shippingAddress
-                this.updatedAt = Instant.now()
+        toUpdate.shippingAddress = null
+        val order = orderRepository.save(
+            orderRepository.getReferenceById(orderId).apply {
+                userId = toUpdate.userId
+                updatedAt = Instant.now()
             }
         )
 
-        return order
+        if (shippingAddrToUpdate == null) {
+            shippingAddressRepository.delete(
+                shippingAddressRepository.getReferenceById(orderId)
+            )
+        } else {
+            shippingAddressRepository.save(
+                shippingAddressRepository.findByOrderId(orderId)
+                    .orElse(shippingAddrToUpdate.apply {
+                        this.order = order
+                    }).apply {
+                        country = shippingAddrToUpdate.country
+                        city = shippingAddrToUpdate.city
+                        street = shippingAddrToUpdate.street
+                        zipCode = shippingAddrToUpdate.zipCode
+                }
+            )
+        }
+
+        return order.id
     }
 }

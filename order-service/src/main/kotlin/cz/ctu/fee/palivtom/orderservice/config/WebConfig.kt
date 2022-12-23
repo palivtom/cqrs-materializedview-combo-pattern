@@ -6,7 +6,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer
 
 
 @Configuration
-class WebApplicationConfig(
+class WebConfig(
     private val hibernateRequestInterceptor: HibernateRequestInterceptor
 ) : WebMvcConfigurer {
 

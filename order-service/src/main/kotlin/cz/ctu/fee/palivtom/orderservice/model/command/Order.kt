@@ -26,11 +26,11 @@ open class Order(
     @Column(name = "updated_at")
     open var updatedAt: Instant? = null,
 
-    @Column(name = "removed_at")
-    open var removedAt: Instant? = null
+    @Column(name = "deleted_at")
+    open var deletedAt: Instant? = null
 
 ) {
     override fun toString(): String {
-        return "Order(id=$id, userId=$userId, shippingAddress=$shippingAddress, createdAt=$createdAt, updatedAt=$updatedAt, deletedAt=$removedAt)"
+        return "Order(id=$id, userId=$userId, shippingAddress=$shippingAddress, createdAt=$createdAt, updatedAt=$updatedAt, deletedAt=$deletedAt)"
     }
 }
