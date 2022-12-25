@@ -8,6 +8,6 @@ import java.util.*
 @Repository
 interface ShippingAddressRepository : JpaRepository<ShippingAddress, Long> {
 
-    fun findByOrderId(orderId: Long): Optional<ShippingAddress>
+    fun findByOrderId(orderId: Long): ShippingAddress?
 
 }

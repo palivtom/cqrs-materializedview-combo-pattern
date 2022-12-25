@@ -1,80 +1,59 @@
 package cz.ctu.fee.palivtom.orderservice.service.command
 
+import cz.ctu.fee.palivtom.orderservice.exceptions.runtime.NotFoundApiRuntimeException
 import cz.ctu.fee.palivtom.orderservice.model.command.Order
 import cz.ctu.fee.palivtom.orderservice.repository.command.OrderRepository
-import cz.ctu.fee.palivtom.orderservice.repository.command.ShippingAddressRepository
 import cz.ctu.fee.palivtom.orderservice.service.command.interfaces.OrderService
+import cz.ctu.fee.palivtom.orderservice.service.command.interfaces.ShippingAddressService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Instant
+import javax.persistence.EntityNotFoundException
 
 @Service
+@Transactional
 class OrdersServiceImpl(
-    private val orderRepository: OrderRepository,
-    private val shippingAddressRepository: ShippingAddressRepository
+    private val shippingAddressService: ShippingAddressService,
+    private val orderRepository: OrderRepository
 ) : OrderService {
 
-    // TODO create shipping address service
-
-    @Transactional
     override fun createOrder(toCreate: Order): Long {
-        val shippingAddr = toCreate.shippingAddress // todo redo this
-
+        val shippingAddr = toCreate.shippingAddress // FIXME is it ok to do this?
         toCreate.shippingAddress = null
+
         val order = orderRepository.save(toCreate)
 
         shippingAddr?.let {
-            shippingAddressRepository.save(
-                it.apply {
-                    this.order = order
-                }
-            )
+            shippingAddressService.createShippingAddress(it, order.id)
         }
 
         return order.id
     }
 
-    @Transactional
     override fun cancelOrder(orderId: Long): Long {
-        val order = orderRepository.save(
-            orderRepository.getReferenceById(orderId).apply {
-                this.deletedAt = Instant.now()
-            }
-        )
-
-        return order.id
+        return try {
+            orderRepository.save(
+                orderRepository.getReferenceById(orderId).apply {
+                    deletedAt = Instant.now()
+                }
+            ).id
+        } catch (e: EntityNotFoundException) {
+            throw NotFoundApiRuntimeException("Order with id $orderId not found.")
+        }
     }
 
-    @Transactional
     override fun updateOrder(orderId: Long, toUpdate: Order): Long {
-        val shippingAddrToUpdate = toUpdate.shippingAddress // todo redo this
+        shippingAddressService.updateShippingAddress(toUpdate.shippingAddress, orderId)
 
-        toUpdate.shippingAddress = null
-        val order = orderRepository.save(
-            orderRepository.getReferenceById(orderId).apply {
-                userId = toUpdate.userId
-                updatedAt = Instant.now()
-            }
-        )
-
-        if (shippingAddrToUpdate == null) {
-            shippingAddressRepository.delete(
-                shippingAddressRepository.getReferenceById(orderId)
-            )
-        } else {
-            shippingAddressRepository.save(
-                shippingAddressRepository.findByOrderId(orderId)
-                    .orElse(shippingAddrToUpdate.apply {
-                        this.order = order
-                    }).apply {
-                        country = shippingAddrToUpdate.country
-                        city = shippingAddrToUpdate.city
-                        street = shippingAddrToUpdate.street
-                        zipCode = shippingAddrToUpdate.zipCode
+        return try {
+            orderRepository.save(
+                orderRepository.getReferenceById(orderId).apply {
+                    userId = toUpdate.userId
+                    updatedAt = Instant.now()
                 }
-            )
+            ).id
+        } catch (e: EntityNotFoundException) {
+            throw NotFoundApiRuntimeException("Order with id $orderId not found.")
         }
-
-        return order.id
     }
 }

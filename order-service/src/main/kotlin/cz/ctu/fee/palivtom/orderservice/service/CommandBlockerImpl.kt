@@ -1,5 +1,6 @@
 package cz.ctu.fee.palivtom.orderservice.service
 
+import cz.ctu.fee.palivtom.orderservice.exceptions.CommandBlockerException
 import org.springframework.stereotype.Service
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.locks.Condition
@@ -12,7 +13,7 @@ class CommandBlockerImpl : CommandBlocker {
 
     private val sharedLocks = mutableMapOf<String, SharedLock>()
 
-    @Throws(Exception::class)
+    @Throws(CommandBlockerException::class)
     override fun blockUntilViewUpdate(txId: String, timeout: Long) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -25,8 +26,7 @@ class CommandBlockerImpl : CommandBlocker {
         sharedLocks.remove(txId)
 
         if (!result) {
-            // todo implement exception
-            throw Exception("Operation with key $txId timed out.")
+            throw CommandBlockerException("Operation with transaction id '$txId' timed out.")
         }
     }
 

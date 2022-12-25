@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
+import javax.persistence.PersistenceException
 import kotlin.collections.HashMap
 import kotlin.concurrent.withLock
 
@@ -36,7 +37,7 @@ class EventTransactionServiceImpl(
                 transactions[transaction.id] = EventList(transaction.eventCount)
             } else {
                 if (transactions[transaction.id]!!.isCountSet()) {
-                    logger.error { "Transaction ${transaction.id} already registered." }
+                logger.error { "Transaction ${transaction.id} already registered." }
                     return
                 }
 
@@ -65,16 +66,16 @@ class EventTransactionServiceImpl(
     private fun executeEvents(txId: String) {
         transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.BEGIN)
         // TODO what about transaction order? - only in case of scaling
-            transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.PROCESSING)
+        transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.PROCESSING)
 
-            val events = transactions[txId]!!.getEvents()
-            transactions.remove(txId)
-            locks.remove(txId)
+        val events = transactions[txId]!!.getEvents()
+        transactions.remove(txId)
+        locks.remove(txId)
 
-            taskExecutor.execute {
-                proceedEvents(txId, events)
-            }
+        taskExecutor.execute {
+            proceedEvents(txId, events)
         }
+    }
 
         @Transactional
         protected fun proceedEvents(txId: String, events: List<Event>) {
@@ -84,8 +85,8 @@ class EventTransactionServiceImpl(
                     .forEach { it.accept(eventProcessor) }
                 logger.warn { "Transaction $txId processed successfully." }
             transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.SUCCESS)
-        } catch (e: Exception) { // todo what exception?
-            logger.error { "Error while processing transaction $txId" }
+        } catch (e: PersistenceException) {
+            logger.error("Error while processing transaction $txId", e)
             transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.FAIL)
         }
     }
