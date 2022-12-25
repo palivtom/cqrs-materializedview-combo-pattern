@@ -1,7 +1,7 @@
 package cz.ctu.fee.palivtom.orderupdaterservice.model.enums
 
 enum class EventTransactionStatus {
-    RECEIVED,
+    BEGIN,
     PROCESSING,
     FAIL,
     SUCCESS

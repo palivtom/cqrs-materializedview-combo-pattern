@@ -11,7 +11,7 @@ data class TransactionStatusValue(
     val timestamp: Instant
 ) {
     enum class StatusValue {
-        RECEIVED,
+        BEGIN,
         PROCESSING,
         FAIL,
         SUCCESS

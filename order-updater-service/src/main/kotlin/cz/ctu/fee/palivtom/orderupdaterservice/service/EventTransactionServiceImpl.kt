@@ -1,6 +1,7 @@
 package cz.ctu.fee.palivtom.orderupdaterservice.service
 
 import cz.ctu.fee.palivtom.orderupdaterservice.model.Transaction
+import cz.ctu.fee.palivtom.orderupdaterservice.model.EventList
 import cz.ctu.fee.palivtom.orderupdaterservice.model.enums.EventTransactionStatus
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.Event
 import cz.ctu.fee.palivtom.orderupdaterservice.producer.TransactionStatusProducer
@@ -10,7 +11,9 @@ import mu.KotlinLogging
 import org.springframework.core.task.SyncTaskExecutor
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
+import kotlin.collections.HashMap
 import kotlin.concurrent.withLock
 
 @Service
@@ -21,69 +24,69 @@ class EventTransactionServiceImpl(
     private val logger = KotlinLogging.logger {}
 
     private val taskExecutor = SyncTaskExecutor()
-    private val transactions = HashMap<String, Pair<Transaction?, MutableList<Event>>>()
-    private val transactionsLock = ReentrantLock()
-
-    // TODO what about transaction order?
-    // TODO better thread locking - its not necessary to lock whole transaction map
+    private val transactions = HashMap<String, EventList>()
+    private val locks = ConcurrentHashMap<String, ReentrantLock>()
 
     override fun registerTransaction(transaction: Transaction) {
-        transactionsLock.withLock {
-            logger.info { "Registering transaction: $transaction" }
-            transactionStatusProducer.sendEventTransactionStatus(transaction.id, EventTransactionStatus.RECEIVED)
+        val lock = locks.getOrPut(transaction.id) { ReentrantLock() }
+        lock.withLock {
+            logger.info { "Registering transaction: ${transaction.id}" }
 
-            val localTransaction = transactions[transaction.id]
-
-            if (localTransaction == null) {
-                transactions[transaction.id] = Pair(transaction, mutableListOf())
-            } else if (localTransaction.first == null) {
-                transactions[transaction.id] = Pair(transaction, localTransaction.second)
-                executeEvents(transaction.id)
+            if (transactions[transaction.id] == null) {
+                transactions[transaction.id] = EventList(transaction.eventCount)
             } else {
-                throw IllegalStateException("Transaction ${transaction.id} already registered.") // todo
-            }
-        }
-    }
+                if (transactions[transaction.id]!!.isCountSet()) {
+                    logger.error { "Transaction ${transaction.id} already registered." }
+                    return
+                }
 
-    override fun addEventToTransaction(event: Event) {
-        transactionsLock.withLock {
-            val txId = event.eventMetadata.txId
-            logger.info { "Adding event $event to transaction $txId" }
-            val transactionPair = transactions[txId]
-
-            if (transactionPair == null) {
-                transactions[txId] = Pair(null, mutableListOf(event))
-            } else {
-                transactionPair.second.add(event)
-                if (transactionPair.first != null) {
-                    executeEvents(txId)
+                val isCollected = transactions[transaction.id]!!.setTargetCount(transaction.eventCount)
+                if (isCollected) {
+                    executeEvents(transaction.id)
                 }
             }
         }
     }
 
-    private fun executeEvents(txId: String) {
-        val transactionPair = transactions[txId]!!
-        if (transactionPair.first!!.eventCount != transactionPair.second.size) return
+    override fun addEventToTransaction(event: Event) {
+        val txId = event.eventMetadata.txId
+        val lock = locks.getOrPut(txId) { ReentrantLock() }
+        lock.withLock {
+            logger.info { "Adding event ${event.eventMetadata} to transaction $txId" }
 
-        transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.PROCESSING)
-
-        try {
-            taskExecutor.execute {
-                proceedEvents(transactionPair.second)
-                transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.SUCCESS)
+            val eventList = transactions.getOrPut(txId) { EventList() }
+            val isCollected = eventList.addEvent(event)
+            if (isCollected) {
+                executeEvents(txId)
             }
-        } catch (e: Exception) {
+        }
+    }
+
+    private fun executeEvents(txId: String) {
+        transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.BEGIN)
+        // TODO what about transaction order? - only in case of scaling
+            transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.PROCESSING)
+
+            val events = transactions[txId]!!.getEvents()
+            transactions.remove(txId)
+            locks.remove(txId)
+
+            taskExecutor.execute {
+                proceedEvents(txId, events)
+            }
+        }
+
+        @Transactional
+        protected fun proceedEvents(txId: String, events: List<Event>) {
+            try {
+                events
+                    .sortedBy { it.eventMetadata.txTotalOrder }
+                    .forEach { it.accept(eventProcessor) }
+                logger.warn { "Transaction $txId processed successfully." }
+            transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.SUCCESS)
+        } catch (e: Exception) { // todo what exception?
             logger.error { "Error while processing transaction $txId" }
             transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.FAIL)
         }
-
-        transactions.remove(transactionPair.first!!.id)
-    }
-
-    @Transactional
-    protected fun proceedEvents(events: List<Event>) {
-        events.sortedBy { it.eventMetadata.txTotalOrder }
-            .forEach { it.accept(eventProcessor) }
     }
 }
