@@ -37,7 +37,7 @@ class EventTransactionServiceImpl(
                 transactions[transaction.id] = EventList(transaction.eventCount)
             } else {
                 if (transactions[transaction.id]!!.isCountSet()) {
-                logger.error { "Transaction ${transaction.id} already registered." }
+                    logger.error { "Transaction ${transaction.id} already registered." }
                     return
                 }
 
@@ -77,13 +77,12 @@ class EventTransactionServiceImpl(
         }
     }
 
-        @Transactional
-        protected fun proceedEvents(txId: String, events: List<Event>) {
-            try {
-                events
-                    .sortedBy { it.eventMetadata.txTotalOrder }
-                    .forEach { it.accept(eventProcessor) }
-                logger.warn { "Transaction $txId processed successfully." }
+    @Transactional
+    protected fun proceedEvents(txId: String, events: List<Event>) {
+        try {
+            events
+                .sortedBy { it.eventMetadata.txTotalOrder }
+                .forEach { it.accept(eventProcessor) }
             transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.SUCCESS)
         } catch (e: PersistenceException) {
             logger.error("Error while processing transaction $txId", e)

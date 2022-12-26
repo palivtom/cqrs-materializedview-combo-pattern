@@ -11,10 +11,10 @@ import kotlin.jvm.Throws
 @Service
 class CommandBlockerImpl : CommandBlocker {
 
-    private val sharedLocks = mutableMapOf<String, SharedLock>()
+    private val sharedLocks = HashMap<String, SharedLock>()
 
     @Throws(CommandBlockerException::class)
-    override fun blockUntilViewUpdate(txId: String, timeout: Long) {
+    override fun blockWithTimeout(txId: String, timeout: Long) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
 
