@@ -3,16 +3,22 @@ The library is a simple example of a project that uses the command query respons
 
 ## Installation
 
-1. Start dockerization of the project
+1. Build both services
+```bash
+./order-service/gradlew bootJar -p ./order-service && \
+./order-updater-service/gradlew bootJar -p ./order-updater-service
+```
+
+2. Start dockerization of the project
 ```bash
 docker compose up --build -d
 ```
 
-2. Create debezium connector
+3. Create debezium connector
 ```bash
 curl -i -X POST -H "Content-Type:application/json" http://localhost:8083/connectors/ -d @config/connectors/register-postgres.json
 ```
 
-3. Application is available on http://localhost:8080
+4. Application is available on http://localhost:8080
 
-4. Swagger open api specification is in ./order-service/src/main/resources/openapi/order-service.yml
+5. Swagger open api specification can be found at `./order-service/src/main/resources/openapi/order-service.yml`

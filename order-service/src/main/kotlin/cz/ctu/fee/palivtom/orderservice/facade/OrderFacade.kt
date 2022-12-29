@@ -10,6 +10,7 @@ import cz.ctu.fee.palivtom.orderservice.service.querry.interfaces.OrderViewServi
 import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderMapper.toDto
 import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderMapper.toEntity
 import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderViewMapper.toCommandEntity
+import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
@@ -20,6 +21,8 @@ class OrderFacade(
     private val commandBlocker: CommandBlocker,
     private val hibernateTransactionInterceptor: HibernateTransactionInterceptor
 ) {
+
+    private val logger = KotlinLogging.logger {}
 
     fun getOrderById(orderId: Long): OrderDto {
         return orderViewService.getOrderView(orderId)
@@ -40,6 +43,7 @@ class OrderFacade(
                 3000
             )
         } catch (e: CommandBlockerException) {
+            logger.error { "Command blocked for too long." }
             throw ApiRuntimeException(e.message!!, HttpStatus.REQUEST_TIMEOUT)
         }
 
@@ -56,6 +60,7 @@ class OrderFacade(
                 3000
             )
         } catch (e: CommandBlockerException) {
+            logger.error { "Command blocked for too long." }
             throw ApiRuntimeException(e.message!!, HttpStatus.REQUEST_TIMEOUT)
         }
 
@@ -72,6 +77,7 @@ class OrderFacade(
                 3000
             )
         } catch (e: CommandBlockerException) {
+            logger.error { "Command blocked for too long." }
             throw ApiRuntimeException(e.message!!, HttpStatus.REQUEST_TIMEOUT)
         }
 
