@@ -10,14 +10,13 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+private val logger = KotlinLogging.logger {}
+
 @Service
 @Transactional
 class ShippingAddressServiceImpl(
     private val orderViewRepository: OrderViewRepository
 ) : ShippingAddressService {
-
-    private val logger = KotlinLogging.logger {}
-
     override fun createShippingAddress(event: CreateShippingAddressEvent) {
         logger.info { "Creating shipping address: $event" }
 

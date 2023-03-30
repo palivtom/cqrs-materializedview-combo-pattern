@@ -24,7 +24,7 @@ data class DebeziumPsqlWrapperValue<T>(
     val transaction: Transaction?
 ) {
 
-    fun toEventMetadata() = EventMetadata(
+    fun getEventMetadata() = EventMetadata(
         txId = transaction!!.id,
         txTotalOrder = transaction.totalOrder,
         txCollectionOrder = transaction.collectionOrder,

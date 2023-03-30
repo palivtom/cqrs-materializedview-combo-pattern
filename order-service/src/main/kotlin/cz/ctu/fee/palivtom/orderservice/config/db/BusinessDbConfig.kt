@@ -27,11 +27,11 @@ import javax.persistence.EntityManagerFactory
     transactionManagerRef = "businessTransactionManager"
 )
 class BusinessDbConfig(
-    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor
+    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor,
+    @Value("\${spring.jpa.hibernate.ddl-auto:none}") private val ddlAuto: String
 ) {
 
-    @Value("\${spring.jpa.hibernate.ddl-auto:none}")
-    private lateinit var ddlAuto: String
+
 
     @Bean
     @ConfigurationProperties("spring.business-datasource")

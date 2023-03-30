@@ -8,8 +8,6 @@ services:
     ports:
       - "8080:8080"
     environment:
-      spring.jpa.hibernate.ddl-auto: create
-      spring.flyway.enabled: false
       spring.business-datasource.url: jdbc:postgresql://pg-database:5432/order-service
       spring.business-datasource.username: postgres
       spring.business-datasource.password: postgres
@@ -20,6 +18,8 @@ services:
       spring.kafka.bootstrap-servers: broker:9092
       spring.kafka.properties.group.id: order-service
       spring.kafka.properties.schema.registry.url: http://schema-registry:8081
+
+      kafka.topics.event.transaction.status: event_transaction_status
     depends_on:
       - broker
       - pg-database
@@ -27,7 +27,6 @@ services:
   order-updater-service:
     build: order-updater-service
     environment:
-      spring.jpa.hibernate.ddl-auto: none
       spring.datasource.url: jdbc:postgresql://pg-database:5432/order-updater-service
       spring.datasource.username: postgres
       spring.datasource.password: postgres
@@ -36,6 +35,7 @@ services:
       spring.kafka.properties.group.id: order-updater-service
       spring.kafka.properties.schema.registry.url: http://schema-registry:8081
 
+      kafka.topics.event.transaction.status: event_transaction_status
       kafka.topics.order-service-db.orders: order-service.public.orders
       kafka.topics.order-service-db.shipping_addresses: order-service.public.shipping_addresses
       kafka.topics.order-service-db.transactions: order-service.transaction

@@ -14,6 +14,12 @@ import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
 
+private val logger = KotlinLogging.logger {}
+
+private const val CREATE_ORDER_TIMEOUT = 3000L
+private const val CANCEL_ORDER_TIMEOUT = 3000L
+private const val UPDATE_ORDER_TIMEOUT = 3000L
+
 @Component
 class OrderFacade(
     private val orderService: OrderService,
@@ -21,9 +27,6 @@ class OrderFacade(
     private val commandBlocker: CommandBlocker,
     private val hibernateTransactionInterceptor: HibernateTransactionInterceptor
 ) {
-
-    private val logger = KotlinLogging.logger {}
-
     fun getOrderById(orderId: Long): OrderDto {
         return orderViewService.getOrderView(orderId)
             .toCommandEntity().toDto()
@@ -37,15 +40,7 @@ class OrderFacade(
     fun createOrder(toCreate: OrderDto): OrderDto {
         val resultOrderId = orderService.createOrder(toCreate.toEntity())
 
-        try {
-            commandBlocker.blockWithTimeout(
-                hibernateTransactionInterceptor.getTransactionId(),
-                3000
-            )
-        } catch (e: CommandBlockerException) {
-            logger.error { "Command blocked for too long." }
-            throw ApiRuntimeException(e.message!!, HttpStatus.REQUEST_TIMEOUT)
-        }
+        propagateResponseOrThrow(CREATE_ORDER_TIMEOUT)
 
         return orderViewService.getOrderView(resultOrderId)
             .toCommandEntity().toDto()
@@ -54,15 +49,7 @@ class OrderFacade(
     fun cancelOrder(orderId: Long): OrderDto {
         val resultOrderId = orderService.cancelOrder(orderId)
 
-        try {
-            commandBlocker.blockWithTimeout(
-                hibernateTransactionInterceptor.getTransactionId(),
-                3000
-            )
-        } catch (e: CommandBlockerException) {
-            logger.error { "Command blocked for too long." }
-            throw ApiRuntimeException(e.message!!, HttpStatus.REQUEST_TIMEOUT)
-        }
+        propagateResponseOrThrow(CANCEL_ORDER_TIMEOUT)
 
         return orderViewService.getOrderView(resultOrderId)
             .toCommandEntity().toDto()
@@ -71,17 +58,21 @@ class OrderFacade(
     fun updateOrder(orderId: Long, orderDto: OrderDto): OrderDto {
         val resultOrderId = orderService.updateOrder(orderId, orderDto.toEntity())
 
+        propagateResponseOrThrow(UPDATE_ORDER_TIMEOUT)
+
+        return orderViewService.getOrderView(resultOrderId)
+            .toCommandEntity().toDto()
+    }
+
+    private fun propagateResponseOrThrow(timeout: Long) {
         try {
             commandBlocker.blockWithTimeout(
                 hibernateTransactionInterceptor.getTransactionId(),
-                3000
+                timeout
             )
         } catch (e: CommandBlockerException) {
             logger.error { "Command blocked for too long." }
             throw ApiRuntimeException(e.message!!, HttpStatus.REQUEST_TIMEOUT)
         }
-
-        return orderViewService.getOrderView(resultOrderId)
-            .toCommandEntity().toDto()
     }
 }

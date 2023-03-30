@@ -6,7 +6,7 @@ import cz.ctu.fee.palivtom.orderupdaterservice.model.enums.EventTransactionStatu
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.Event
 import cz.ctu.fee.palivtom.orderupdaterservice.producer.TransactionStatusProducer
 import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.EventTransactionService
-import cz.ctu.fee.palivtom.orderupdaterservice.visitor.interfaces.EventProcessor
+import cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces.EventProcessor
 import mu.KotlinLogging
 import org.springframework.core.task.SyncTaskExecutor
 import org.springframework.stereotype.Service
@@ -17,12 +17,13 @@ import javax.persistence.PersistenceException
 import kotlin.collections.HashMap
 import kotlin.concurrent.withLock
 
+private val logger = KotlinLogging.logger {}
+
 @Service
 class EventTransactionServiceImpl(
     private val transactionStatusProducer: TransactionStatusProducer,
     private val eventProcessor: EventProcessor
 ) : EventTransactionService {
-    private val logger = KotlinLogging.logger {}
 
     private val taskExecutor = SyncTaskExecutor()
     private val transactions = HashMap<String, EventList>()
@@ -37,8 +38,7 @@ class EventTransactionServiceImpl(
                 transactions[transaction.id] = EventList(transaction.eventCount)
             } else {
                 if (transactions[transaction.id]!!.isCountSet()) {
-                    logger.error { "Transaction ${transaction.id} already registered." }
-                    return
+                    return logger.error { "Transaction ${transaction.id} already registered." }
                 }
 
                 val isCollected = transactions[transaction.id]!!.setTargetCount(transaction.eventCount)
@@ -65,7 +65,7 @@ class EventTransactionServiceImpl(
 
     private fun executeEvents(txId: String) {
         transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.BEGIN)
-        // TODO what about transaction order? - only in case of scaling
+        // TODO what about transaction order? - only in case of scaling (btw transaction ids are not necessarily ascending)
         transactionStatusProducer.sendEventTransactionStatus(txId, EventTransactionStatus.PROCESSING)
 
         val events = transactions[txId]!!.getEvents()

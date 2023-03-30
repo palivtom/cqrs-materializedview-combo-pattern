@@ -16,10 +16,6 @@ open class Order(
     @OneToOne(mappedBy = "order")
     open var shippingAddress: ShippingAddress? = null,
 
-    @OneToMany
-    @JoinColumn(name = "order_id")
-    open var items: MutableList<OrderItem> = mutableListOf(),
-
     @Column(name = "created_at", nullable = false)
     open val createdAt: Instant = Instant.now(),
 

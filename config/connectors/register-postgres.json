@@ -10,6 +10,7 @@
     "database.dbname" : "order-service",
     "database.server.name": "order-service",
     "schema.include.list": "public",
+    "snapshot.mode": "never",
     "provide.transaction.metadata": "true"
   }
 }

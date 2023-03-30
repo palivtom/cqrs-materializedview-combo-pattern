@@ -1,1 +1,212 @@
-{"_type":"export","__export_format":4,"__export_date":"2022-12-23T21:22:52.286Z","__export_source":"insomnia.desktop.app:v2022.7.0","resources":[{"_id":"req_3513e01e7ce748e3af44751bbb04b985","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1671830247010,"created":1670093278846,"url":"localhost:8080/orders","name":"Create order","description":"","method":"POST","body":{"mimeType":"application/json","text":"{\n\t\"userId\" : 3,\n\t\"shippingAddress\": {\n\t\t\"street\":\"street\",\n\t\t\"city\":\"city\",\n\t\t\"zipCode\":\"16801\",\n\t\t\"country\":\"CR\"\n\t}\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"}],"authentication":{},"metaSortKey":-1670093278846,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"wrk_0791647c70a1455cb5bcd53fe06588e0","parentId":null,"modified":1671830391681,"created":1669983167034,"name":"Bakalarka","description":"","scope":"collection","_type":"workspace"},{"_id":"req_cc4afebf3ef64a6da0124713351d1df8","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1671826862096,"created":1671815994098,"url":"localhost:8080/orders/1","name":"Cancel order","description":"","method":"DELETE","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1670079515667.125,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_8c967bbbeabf45779a46156317c1605b","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1671826874896,"created":1671815914602,"url":"localhost:8080/orders/1","name":"Update order","description":"","method":"PUT","body":{"mimeType":"application/json","text":"{\n\t\"userId\": 3,\n\t\"shippingAddress\": {\n\t\t\"street\":\"street_edit\",\n\t\t\"city\":\"city\",\n\t\t\"zipCode\":\"16801\",\n\t\t\"country\":\"CR\"\n\t}\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"}],"authentication":{},"metaSortKey":-1670065752488.25,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_4ab15203daeb4ef2871a3f9089ab7475","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1671816253430,"created":1671811803149,"url":"localhost:8080/orders/1","name":"Get order","description":"","method":"GET","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1670038226130.5,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_70854dc95ff444bf9975352167a4393a","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1671816060373,"created":1671816056061,"url":"localhost:8080/orders","name":"Get orders","description":"","method":"GET","body":{},"parameters":[],"headers":[],"authentication":{},"metaSortKey":-1670010699772.75,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"req_6d01bea32a724195823635c1bdb268b5","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1671572167033,"created":1669983173415,"url":"localhost:8083/connectors","name":"Register pq connnector","description":"","method":"POST","body":{"mimeType":"application/json","text":"{\n  \"name\": \"order-connector\",\n  \"config\": {\n    \"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\n    \"tasks.max\": \"1\",\n    \"database.hostname\": \"pg-database\",\n    \"database.port\": \"5432\",\n    \"database.user\": \"postgres\",\n    \"database.password\": \"postgres\",\n    \"database.dbname\" : \"order-service\",\n    \"database.server.name\": \"order-service\",\n    \"schema.include.list\": \"public\",\n\t\t\"provide.transaction.metadata\": \"true\"\n  }\n}"},"parameters":[],"headers":[{"name":"Content-Type","value":"application/json"}],"authentication":{},"metaSortKey":-1669983173415,"isPrivate":false,"settingStoreCookies":true,"settingSendCookies":true,"settingDisableRenderRequestBody":false,"settingEncodeUrl":true,"settingRebuildPath":true,"settingFollowRedirects":"global","_type":"request"},{"_id":"env_bca8da2b60da4e34cf0e6bc2a620c98e3bebd4ab","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1669983167051,"created":1669983167051,"name":"Base Environment","data":{},"dataPropertyOrder":null,"color":null,"isPrivate":false,"metaSortKey":1669983167051,"_type":"environment"},{"_id":"jar_bca8da2b60da4e34cf0e6bc2a620c98e3bebd4ab","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1669983167054,"created":1669983167054,"name":"Default Jar","cookies":[],"_type":"cookie_jar"},{"_id":"spc_2e81e34ad1714e1e93d37b5995cc1fdb","parentId":"wrk_0791647c70a1455cb5bcd53fe06588e0","modified":1669983167043,"created":1669983167043,"fileName":"bakalarka","contents":"","contentType":"yaml","_type":"api_spec"}]}
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2022-12-23T21:22:52.286Z",
+  "__export_source": "insomnia.desktop.app:v2022.7.0",
+  "resources": [
+    {
+      "_id": "req_3513e01e7ce748e3af44751bbb04b985",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1671830247010,
+      "created": 1670093278846,
+      "url": "localhost:8080/orders",
+      "name": "Create order",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"userId\" : 3,\n\t\"shippingAddress\": {\n\t\t\"street\":\"street\",\n\t\t\"city\":\"city\",\n\t\t\"zipCode\":\"16801\",\n\t\t\"country\":\"CR\"\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1670093278846,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "parentId": null,
+      "modified": 1671830391681,
+      "created": 1669983167034,
+      "name": "Bakalarka",
+      "description": "",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "req_cc4afebf3ef64a6da0124713351d1df8",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1671826862096,
+      "created": 1671815994098,
+      "url": "localhost:8080/orders/1",
+      "name": "Cancel order",
+      "description": "",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1670079515667.125,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_8c967bbbeabf45779a46156317c1605b",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1671826874896,
+      "created": 1671815914602,
+      "url": "localhost:8080/orders/1",
+      "name": "Update order",
+      "description": "",
+      "method": "PUT",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"userId\": 3,\n\t\"shippingAddress\": {\n\t\t\"street\":\"street_edit\",\n\t\t\"city\":\"city\",\n\t\t\"zipCode\":\"16801\",\n\t\t\"country\":\"CR\"\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1670065752488.25,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_4ab15203daeb4ef2871a3f9089ab7475",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1671816253430,
+      "created": 1671811803149,
+      "url": "localhost:8080/orders/1",
+      "name": "Get order",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1670038226130.5,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_70854dc95ff444bf9975352167a4393a",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1671816060373,
+      "created": 1671816056061,
+      "url": "localhost:8080/orders",
+      "name": "Get orders",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": -1670010699772.75,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_6d01bea32a724195823635c1bdb268b5",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1671572167033,
+      "created": 1669983173415,
+      "url": "localhost:8083/connectors",
+      "name": "Register pq connnector",
+      "description": "",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"name\": \"order-connector\",\n\t\"config\": {\n\t\t\"connector.class\": \"io.debezium.connector.postgresql.PostgresConnector\",\n\t\t\"tasks.max\": \"1\",\n\t\t\"database.hostname\": \"pg-database\",\n\t\t\"database.port\": \"5432\",\n\t\t\"database.user\": \"postgres\",\n\t\t\"database.password\": \"postgres\",\n\t\t\"database.dbname\" : \"order-service\",\n\t\t\"database.server.name\": \"order-service\",\n\t\t\"schema.include.list\": \"public\",\n\t\t\"snapshot.mode\": \"never\",\n\t\t\"provide.transaction.metadata\": \"true\"\n\t}\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": -1669983173415,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "env_bca8da2b60da4e34cf0e6bc2a620c98e3bebd4ab",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1669983167051,
+      "created": 1669983167051,
+      "name": "Base Environment",
+      "data": {},
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1669983167051,
+      "_type": "environment"
+    },
+    {
+      "_id": "jar_bca8da2b60da4e34cf0e6bc2a620c98e3bebd4ab",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1669983167054,
+      "created": 1669983167054,
+      "name": "Default Jar",
+      "cookies": [],
+      "_type": "cookie_jar"
+    },
+    {
+      "_id": "spc_2e81e34ad1714e1e93d37b5995cc1fdb",
+      "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
+      "modified": 1669983167043,
+      "created": 1669983167043,
+      "fileName": "bakalarka",
+      "contents": "",
+      "contentType": "yaml",
+      "_type": "api_spec"
+    }
+  ]
+}

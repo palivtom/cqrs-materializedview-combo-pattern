@@ -1,9 +1,9 @@
-package cz.ctu.fee.palivtom.orderupdaterservice.visitor
+package cz.ctu.fee.palivtom.orderupdaterservice.processor
 
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.*
 import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.OrderService
 import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.ShippingAddressService
-import cz.ctu.fee.palivtom.orderupdaterservice.visitor.interfaces.EventProcessor
+import cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces.EventProcessor
 import org.springframework.stereotype.Component
 
 @Component

@@ -2,9 +2,9 @@ package cz.ctu.fee.palivtom.orderupdaterservice.config.kafka
 
 import com.fasterxml.jackson.databind.JsonNode
 import cz.ctu.fee.palivtom.orderupdaterservice.model.kafka.TransactionRecordValue
-import cz.ctu.fee.palivtom.orderviewmodel.utils.OrderKafkaTopics
 import io.confluent.kafka.serializers.json.KafkaJsonSchemaDeserializerConfig
 import org.apache.kafka.clients.admin.NewTopic
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.kafka.KafkaProperties
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -20,8 +20,8 @@ class KafkaConfig(
     private val defaultKafkaProperties: KafkaProperties
 ) {
     @Bean
-    fun transactionStatusTopic(): NewTopic {
-        return TopicBuilder.name(OrderKafkaTopics.EVENT_TRANSACTION_STATUS).build()
+    fun transactionStatusTopic(@Value("\${kafka.topics.event.transaction.status}") topicName: String): NewTopic {
+        return TopicBuilder.name(topicName).build()
     }
 
     @Bean

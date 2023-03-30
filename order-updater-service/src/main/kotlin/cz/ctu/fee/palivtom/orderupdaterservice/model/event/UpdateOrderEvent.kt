@@ -1,6 +1,6 @@
 package cz.ctu.fee.palivtom.orderupdaterservice.model.event
 
-import cz.ctu.fee.palivtom.orderupdaterservice.visitor.interfaces.EventProcessor
+import cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces.EventProcessor
 import java.time.Instant
 
 data class UpdateOrderEvent(

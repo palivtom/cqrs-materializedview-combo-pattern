@@ -25,11 +25,9 @@ import javax.persistence.EntityManagerFactory
     entityManagerFactoryRef = "viewEntityManagerFactory",
     transactionManagerRef = "viewTransactionManager"
 )
-class ViewDbConfig {
-
-    @Value("\${spring.jpa.hibernate.ddl-auto:none}")
-    private lateinit var ddlAuto: String
-
+class ViewDbConfig(
+    @Value("\${spring.jpa.hibernate.ddl-auto:none}") private val ddlAuto: String
+) {
     @Bean
     @ConfigurationProperties("spring.view-datasource")
     fun viewDataSourceProps(): DataSourceProperties {

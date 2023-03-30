@@ -1,12 +1,13 @@
-package cz.ctu.fee.palivtom.orderservice.exceptions.runtime
+package cz.ctu.fee.palivtom.orderservice.config
 
+import cz.ctu.fee.palivtom.orderservice.exceptions.runtime.ApiRuntimeException
 import cz.ctu.fee.palivtom.orderservice.model.ExceptionDto
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
-class ApiRuntimeExceptionHandler {
+class ExceptionHandler {
 
     @ExceptionHandler(ApiRuntimeException::class)
     fun handleApiRuntimeException(e: ApiRuntimeException): ResponseEntity<ExceptionDto> {

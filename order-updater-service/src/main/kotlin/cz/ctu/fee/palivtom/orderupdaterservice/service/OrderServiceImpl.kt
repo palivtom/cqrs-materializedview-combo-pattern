@@ -9,13 +9,13 @@ import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+private val logger = KotlinLogging.logger {}
+
 @Service
 @Transactional
 class OrderServiceImpl(
     private val orderViewRepository: OrderViewRepository
 ) : OrderService {
-    private val logger = KotlinLogging.logger {}
-
     override fun createOrder(event: CreateOrderEvent) {
         logger.info { "Creating order: $event" }
 

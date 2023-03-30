@@ -18,7 +18,7 @@ class OrdersServiceImpl(
 ) : OrderService {
 
     override fun createOrder(toCreate: Order): Long {
-        val shippingAddr = toCreate.shippingAddress // FIXME is it ok to do this?
+        val shippingAddr = toCreate.shippingAddress // owner of this relation is ShippingAddress
         toCreate.shippingAddress = null
 
         val order = orderRepository.save(toCreate)

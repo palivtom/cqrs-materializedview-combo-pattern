@@ -1,4 +1,4 @@
-package cz.ctu.fee.palivtom.orderupdaterservice.visitor.interfaces
+package cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces
 
 interface EventProcessable {
     fun accept(eventProcessor: EventProcessor)

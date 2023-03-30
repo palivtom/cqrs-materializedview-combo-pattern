@@ -1,4 +1,4 @@
-package cz.ctu.fee.palivtom.orderupdaterservice.visitor.interfaces
+package cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces
 
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.CreateShippingAddressEvent
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.DeleteShippingAddressEvent
