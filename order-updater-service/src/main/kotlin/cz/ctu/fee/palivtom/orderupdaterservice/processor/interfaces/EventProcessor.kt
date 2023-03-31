@@ -6,6 +6,9 @@ import cz.ctu.fee.palivtom.orderupdaterservice.model.event.CreateOrderEvent
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.UpdateOrderEvent
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.UpdateShippingAddressEvent
 
+/**
+ * Visitor implementation.
+ */
 interface EventProcessor {
     fun process(event: CreateOrderEvent)
     fun process(event: UpdateOrderEvent)

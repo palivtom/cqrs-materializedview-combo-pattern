@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 class JacksonConfig {
-
     @Bean
     fun objectMapper(): JsonMapper {
         return jsonMapper {
@@ -19,5 +18,4 @@ class JacksonConfig {
             configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
         }
     }
-
 }

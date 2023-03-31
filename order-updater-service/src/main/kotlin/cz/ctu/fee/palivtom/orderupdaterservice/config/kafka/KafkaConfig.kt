@@ -13,7 +13,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory
 import org.springframework.kafka.config.TopicBuilder
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory
 
-
 @EnableKafka
 @Configuration
 class KafkaConfig(
@@ -34,6 +33,9 @@ class KafkaConfig(
         return createConsumerContainerFactory(true)
     }
 
+    /**
+     * Container factory - be aware of generic types, it is not supported.
+     */
     private inline fun <reified K: Any, reified V: Any> createConsumerContainerFactory(
         allowUnknownProps: Boolean
     ): ConcurrentKafkaListenerContainerFactory<K, V> {

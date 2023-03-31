@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * It consumes events that unblock the request thread.
+ */
 @Component
 class TransactionStatusConsumer(
     private val commandBlocker: CommandBlocker

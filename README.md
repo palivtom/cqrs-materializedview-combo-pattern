@@ -2,6 +2,11 @@
 The library is a simple example of a project that uses the command query responsibility segregation pattern.
 
 ## Installation
+0. Make gradle executable
+```bash
+chmod +x ./order-service/gradlew && \
+chmod +x ./order-updater-service/gradlew
+```
 
 1. Build both services
 ```bash

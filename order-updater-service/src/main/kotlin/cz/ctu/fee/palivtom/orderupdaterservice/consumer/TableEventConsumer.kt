@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * It consumes database table events and transforms them into application events.
+ */
 @Component
 class TableEventConsumer(
     private val objectMapper: ObjectMapper,

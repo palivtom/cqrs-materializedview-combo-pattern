@@ -6,6 +6,11 @@ import org.hibernate.Transaction
 import org.springframework.context.annotation.Lazy
 import org.springframework.stereotype.Component
 
+/**
+ * Interceptor holds transaction ID per thread/request.
+ *
+ * Premiss for this approach is a single transaction per request. Otherwise, only the last one will be held.
+ */
 @Component
 class HibernateTransactionInterceptor(
     @Lazy private val transactionRepository: TransactionRepository

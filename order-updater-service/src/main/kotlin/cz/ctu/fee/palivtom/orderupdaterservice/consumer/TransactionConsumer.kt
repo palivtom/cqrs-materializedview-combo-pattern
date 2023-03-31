@@ -10,6 +10,9 @@ import org.springframework.stereotype.Component
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * It consumes database transaction events.
+ */
 @Component
 class TransactionConsumer(
     private val eventTransactionService: EventTransactionService,

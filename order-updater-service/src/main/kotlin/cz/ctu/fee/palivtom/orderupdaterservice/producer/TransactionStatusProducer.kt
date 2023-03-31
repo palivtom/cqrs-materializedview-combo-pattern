@@ -11,6 +11,9 @@ import java.time.Instant
 
 private val logger = KotlinLogging.logger {}
 
+/**
+ * Produces state of each consumed and processed transaction.
+ */
 @Component
 class TransactionStatusProducer(
     private val kafkaTemplate: KafkaTemplate<TransactionStatusKey, TransactionStatusValue>,

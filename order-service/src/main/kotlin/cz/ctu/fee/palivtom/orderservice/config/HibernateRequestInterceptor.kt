@@ -19,6 +19,9 @@ class HibernateRequestInterceptor(
         // nothing to do
     }
 
+    /**
+     * Clears thread-locked variable before request response.
+     */
     override fun afterCompletion(request: WebRequest, ex: Exception?) {
         transactionInterceptor.clear()
     }

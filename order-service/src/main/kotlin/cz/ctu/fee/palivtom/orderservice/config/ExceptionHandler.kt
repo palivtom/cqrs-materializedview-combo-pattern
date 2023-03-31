@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class ExceptionHandler {
-
     @ExceptionHandler(ApiRuntimeException::class)
     fun handleApiRuntimeException(e: ApiRuntimeException): ResponseEntity<ExceptionDto> {
         return ResponseEntity.status(e.httpStatus)

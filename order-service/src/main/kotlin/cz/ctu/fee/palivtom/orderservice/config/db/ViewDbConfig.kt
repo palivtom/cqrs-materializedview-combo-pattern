@@ -17,7 +17,14 @@ import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import javax.persistence.EntityManagerFactory
 
-
+/**
+ * Additional (second) database configuration.
+ *
+ * Set-ups the view database targeting context of view model.
+ * To specify database use `spring.view-datasource` prefix.
+ *
+ * Flyway migration is integrated at path `classpath:db/migration/view`.
+ */
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(

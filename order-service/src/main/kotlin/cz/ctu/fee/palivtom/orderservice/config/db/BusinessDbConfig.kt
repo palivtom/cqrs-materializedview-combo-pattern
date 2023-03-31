@@ -18,7 +18,14 @@ import org.springframework.transaction.PlatformTransactionManager
 import org.springframework.transaction.annotation.EnableTransactionManagement
 import javax.persistence.EntityManagerFactory
 
-
+/**
+ * Overrides Spring Boot autoconfiguration.
+ *
+ * Set-ups the business database targeting context of command model.
+ * To specify database use `spring.business-datasource` prefix.
+ *
+ * Flyway migration is integrated at path `classpath:db/migration/business`.
+ */
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(
@@ -30,9 +37,6 @@ class BusinessDbConfig(
     private val hibernateTransactionInterceptor: HibernateTransactionInterceptor,
     @Value("\${spring.jpa.hibernate.ddl-auto:none}") private val ddlAuto: String
 ) {
-
-
-
     @Bean
     @ConfigurationProperties("spring.business-datasource")
     fun businessDataSourceProps(): DataSourceProperties {
@@ -42,7 +46,10 @@ class BusinessDbConfig(
     @Primary
     @Bean
     fun businessDataSource(): HikariDataSource {
-        return businessDataSourceProps().initializeDataSourceBuilder().type(HikariDataSource::class.java).build()
+        return businessDataSourceProps()
+            .initializeDataSourceBuilder()
+            .type(HikariDataSource::class.java)
+            .build()
     }
 
     @Bean
