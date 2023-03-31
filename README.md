@@ -1,6 +1,8 @@
 # Example library
 The library is a simple example of a project that uses the command query responsibility segregation pattern.
 
+Simplified component flow diagram: ![component flow diagram](attachments/component-flow.png)
+
 ## Installation
 0. Make gradle executable
 ```bash
