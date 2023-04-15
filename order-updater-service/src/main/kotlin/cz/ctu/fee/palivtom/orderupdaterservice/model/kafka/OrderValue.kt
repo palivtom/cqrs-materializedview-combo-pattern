@@ -7,20 +7,23 @@ import java.time.Instant
 
 data class OrderValue(
     @JsonProperty("id")
-    var id: Long,
+    val id: Long,
 
     @JsonProperty("user_id")
-    var userId: Long? = null,
+    val userId: String?,
+
+    @JsonProperty("cart_id")
+    val cartId: Long?,
 
     @JsonProperty("created_at")
     @JsonDeserialize(using = InstantPsqlDeserializer::class)
-    var createdAt: Instant? = null,
+    val createdAt: Instant?,
 
     @JsonProperty("updated_at")
     @JsonDeserialize(using = InstantPsqlDeserializer::class)
-    var updatedAt: Instant? = null,
+    val updatedAt: Instant?,
 
     @JsonProperty("deleted_at")
     @JsonDeserialize(using = InstantPsqlDeserializer::class)
-    var deletedAt: Instant? = null,
+    val deletedAt: Instant?
 )

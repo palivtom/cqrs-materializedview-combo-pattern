@@ -2,7 +2,6 @@ package cz.ctu.fee.palivtom.orderupdaterservice.model.kafka
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
-import cz.ctu.fee.palivtom.orderupdaterservice.model.event.EventMetadata
 
 data class DebeziumPsqlWrapperValue<T>(
     @JsonProperty("op")
@@ -23,17 +22,12 @@ data class DebeziumPsqlWrapperValue<T>(
     @JsonProperty("transaction")
     val transaction: Transaction?
 ) {
-
-    fun getEventMetadata() = EventMetadata(
-        txId = transaction!!.id,
-        txTotalOrder = transaction.totalOrder,
-        txCollectionOrder = transaction.collectionOrder,
-    )
-
     enum class Operation(
         private val value: String
     ) {
         READ("r"),
+        TRUNCATE("t"),
+        MESSAGE("m"),
         CREATE("c"),
         UPDATE("u"),
         DELETE("d");

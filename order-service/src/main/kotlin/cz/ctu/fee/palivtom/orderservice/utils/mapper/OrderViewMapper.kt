@@ -1,18 +1,20 @@
 package cz.ctu.fee.palivtom.orderservice.utils.mapper
 
-import cz.ctu.fee.palivtom.orderservice.model.command.Order
-import cz.ctu.fee.palivtom.orderservice.model.command.ShippingAddress
+import cz.ctu.fee.palivtom.orderservice.model.OrderViewDto
+import cz.ctu.fee.palivtom.orderservice.model.ShippingAddressDto
+import cz.ctu.fee.palivtom.orderservice.utils.mapper.CartViewMapper.toDto
 import cz.ctu.fee.palivtom.orderviewmodel.model.entity.OrderView
 
 object OrderViewMapper {
-    fun OrderView.toCommandEntity() = Order(
+    fun OrderView.toDto() = OrderViewDto(
         id = id,
-        userId = userId!!,
-        createdAt = createdAt!!,
-        updatedAt = updatedAt,
-        deletedAt = deletedAt,
+        userId = userId,
+        cart = cart.toDto(),
+        createdAt = createdAt.epochSecond,
+        updatedAt = updatedAt?.epochSecond,
+        deletedAt = deletedAt?.epochSecond,
         shippingAddress = country?.let {
-            ShippingAddress(
+            ShippingAddressDto(
                 country = country!!,
                 city = city!!,
                 street = street!!,

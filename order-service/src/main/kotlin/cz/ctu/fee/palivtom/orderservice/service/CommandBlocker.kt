@@ -13,11 +13,13 @@ interface CommandBlocker {
     fun blockWithTimeout(txId: String, timeout: Long)
 
     /**
-     * Releases thread that operates with the given transaction ID.
+     * Releases thread that operates with the given transaction ID and
+     * throws [CommandBlockerException] if success flag is false.
      *
      * If the transaction ID does not match anything, nothing happens.
      *
      * @param txId transaction ID, identifier of blocked thread
+     * @param success true if transaction has been committed
      */
-    fun unblock(txId: String)
+    fun unblock(txId: String, success: Boolean)
 }

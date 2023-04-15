@@ -23,7 +23,8 @@ class TransactionStatusConsumer(
 
         try {
             when(message.value().status) {
-                TransactionStatusValue.StatusValue.SUCCESS -> commandBlocker.unblock(message.key().txId)
+                TransactionStatusValue.StatusValue.SUCCESS -> commandBlocker.unblock(message.key().txId, true)
+                TransactionStatusValue.StatusValue.FAIL -> commandBlocker.unblock(message.key().txId, false)
                 else -> logger.debug { "Message $message has been ignored." }
             }
         } catch (e: Exception) {

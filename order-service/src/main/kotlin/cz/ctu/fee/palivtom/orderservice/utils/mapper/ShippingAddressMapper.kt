@@ -10,11 +10,4 @@ object ShippingAddressMapper {
         zipCode = zipCode,
         country = country
     )
-
-    fun ShippingAddress.toDto() = ShippingAddressDto(
-        street = street,
-        city = city,
-        zipCode = zipCode,
-        country = country
-    )
 }

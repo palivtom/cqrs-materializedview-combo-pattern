@@ -5,28 +5,23 @@ import cz.ctu.fee.palivtom.orderupdaterservice.model.event.DeleteShippingAddress
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.UpdateShippingAddressEvent
 import cz.ctu.fee.palivtom.orderupdaterservice.repository.OrderViewRepository
 import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.ShippingAddressService
-import cz.ctu.fee.palivtom.orderviewmodel.model.entity.OrderView
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 private val logger = KotlinLogging.logger {}
 
 @Service
-@Transactional
 class ShippingAddressServiceImpl(
     private val orderViewRepository: OrderViewRepository
 ) : ShippingAddressService {
     override fun createShippingAddress(event: CreateShippingAddressEvent) {
-        logger.info { "Creating shipping address: $event" }
+        logger.debug { "Creating shipping address: $event" }
 
         orderViewRepository.save(
-            orderViewRepository
-                .findById(event.orderId)
-                .orElse(OrderView(
-                    id = event.orderId
-                )).apply {
-                    shippingAddressId = event.shippingAddressId
+            orderViewRepository.findById(event.orderId)
+                .orElseThrow { RuntimeException("Order with id ${event.orderId} not found.") }
+                .apply {
+                    shippingAddressId = event.id
                     country = event.country
                     city = event.city
                     zipCode = event.zipCode
@@ -36,11 +31,10 @@ class ShippingAddressServiceImpl(
     }
 
     override fun updateShippingAddress(event: UpdateShippingAddressEvent) {
-        logger.info { "Updating shipping address: $event" }
+        logger.debug { "Updating shipping address: $event" }
 
         orderViewRepository.save(
-            orderViewRepository
-                .findById(event.orderId)
+            orderViewRepository.findById(event.orderId)
                 .orElseThrow { RuntimeException("Order with id ${event.orderId} not found.") }
                 .apply {
                     country = event.country
@@ -52,12 +46,11 @@ class ShippingAddressServiceImpl(
     }
 
     override fun deleteShippingAddress(event: DeleteShippingAddressEvent) {
-        logger.info { "Deleting shipping address: $event" }
+        logger.debug { "Deleting shipping address: $event" }
 
         orderViewRepository.save(
-            orderViewRepository
-                .findByShippingAddressId(event.shippingAddressId)
-                .orElseThrow { RuntimeException("Order with shipping address id ${event.shippingAddressId} not found.") }
+            orderViewRepository.findByShippingAddressId(event.id)
+                .orElseThrow { RuntimeException("Order with shipping address id ${event.id} not found.") }
                 .apply {
                     shippingAddressId = null
                     country = null

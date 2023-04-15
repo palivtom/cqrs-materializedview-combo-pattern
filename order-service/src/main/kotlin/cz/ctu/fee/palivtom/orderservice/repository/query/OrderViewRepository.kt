@@ -5,4 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface OrderViewRepository : JpaRepository<OrderView, Long>
+interface OrderViewRepository : JpaRepository<OrderView, Long> {
+    fun findAllByUserId(userId: String): List<OrderView>
+    fun findByIdAndUserId(id: Long, userId: String): OrderView?
+}

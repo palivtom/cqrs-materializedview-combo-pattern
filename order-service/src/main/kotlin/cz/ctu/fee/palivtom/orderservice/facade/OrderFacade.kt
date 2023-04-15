@@ -4,12 +4,12 @@ import cz.ctu.fee.palivtom.orderservice.config.db.HibernateTransactionIntercepto
 import cz.ctu.fee.palivtom.orderservice.exceptions.CommandBlockerException
 import cz.ctu.fee.palivtom.orderservice.exceptions.runtime.ApiRuntimeException
 import cz.ctu.fee.palivtom.orderservice.model.OrderDto
+import cz.ctu.fee.palivtom.orderservice.model.OrderViewDto
 import cz.ctu.fee.palivtom.orderservice.service.CommandBlocker
 import cz.ctu.fee.palivtom.orderservice.service.command.interfaces.OrderService
 import cz.ctu.fee.palivtom.orderservice.service.querry.interfaces.OrderViewService
-import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderMapper.toDto
 import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderMapper.toEntity
-import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderViewMapper.toCommandEntity
+import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderViewMapper.toDto
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -27,41 +27,36 @@ class OrderFacade(
     private val commandBlocker: CommandBlocker,
     private val hibernateTransactionInterceptor: HibernateTransactionInterceptor
 ) {
-    fun getOrderById(orderId: Long): OrderDto {
-        return orderViewService.getOrderView(orderId)
-            .toCommandEntity().toDto()
+    fun getOrderById(orderId: Long): OrderViewDto {
+        return orderViewService.getOrderView(orderId).toDto()
     }
 
-    fun getOrders(): List<OrderDto> {
-        return orderViewService.getOrders()
-            .map { it.toCommandEntity().toDto() }
+    fun getOrders(): List<OrderViewDto> {
+        return orderViewService.getOrders().map { it.toDto() }
     }
 
-    fun createOrder(toCreate: OrderDto): OrderDto {
+    fun createOrder(toCreate: OrderDto): OrderViewDto {
         val resultOrderId = orderService.createOrder(toCreate.toEntity())
 
         propagateResponseOrThrow(CREATE_ORDER_TIMEOUT)
 
-        return orderViewService.getOrderView(resultOrderId)
-            .toCommandEntity().toDto()
+        return orderViewService.getOrderView(resultOrderId).toDto()
     }
 
-    fun cancelOrder(orderId: Long): OrderDto {
-        val resultOrderId = orderService.cancelOrder(orderId)
+    fun cancelOrder(orderId: Long): OrderViewDto {
+        orderService.cancelOrder(orderId)
 
         propagateResponseOrThrow(CANCEL_ORDER_TIMEOUT)
 
-        return orderViewService.getOrderView(resultOrderId)
-            .toCommandEntity().toDto()
+        return orderViewService.getOrderView(orderId).toDto()
     }
 
-    fun updateOrder(orderId: Long, orderDto: OrderDto): OrderDto {
-        val resultOrderId = orderService.updateOrder(orderId, orderDto.toEntity())
+    fun updateOrder(orderId: Long, orderDto: OrderDto): OrderViewDto {
+        orderService.updateOrder(orderId, orderDto.toEntity())
 
         propagateResponseOrThrow(UPDATE_ORDER_TIMEOUT)
 
-        return orderViewService.getOrderView(resultOrderId)
-            .toCommandEntity().toDto()
+        return orderViewService.getOrderView(orderId).toDto()
     }
 
     private fun propagateResponseOrThrow(timeout: Long) {
@@ -71,7 +66,7 @@ class OrderFacade(
                 timeout
             )
         } catch (e: CommandBlockerException) {
-            logger.error { "Command blocked for too long." }
+            logger.error(e.message)
             throw ApiRuntimeException(e.message!!, HttpStatus.REQUEST_TIMEOUT)
         }
     }

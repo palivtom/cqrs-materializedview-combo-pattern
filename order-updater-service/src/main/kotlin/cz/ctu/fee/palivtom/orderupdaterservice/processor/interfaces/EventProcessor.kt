@@ -1,10 +1,6 @@
 package cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces
 
-import cz.ctu.fee.palivtom.orderupdaterservice.model.event.CreateShippingAddressEvent
-import cz.ctu.fee.palivtom.orderupdaterservice.model.event.DeleteShippingAddressEvent
-import cz.ctu.fee.palivtom.orderupdaterservice.model.event.CreateOrderEvent
-import cz.ctu.fee.palivtom.orderupdaterservice.model.event.UpdateOrderEvent
-import cz.ctu.fee.palivtom.orderupdaterservice.model.event.UpdateShippingAddressEvent
+import cz.ctu.fee.palivtom.orderupdaterservice.model.event.*
 
 /**
  * Visitor implementation.
@@ -12,7 +8,18 @@ import cz.ctu.fee.palivtom.orderupdaterservice.model.event.UpdateShippingAddress
 interface EventProcessor {
     fun process(event: CreateOrderEvent)
     fun process(event: UpdateOrderEvent)
+
     fun process(event: CreateShippingAddressEvent)
     fun process(event: UpdateShippingAddressEvent)
     fun process(event: DeleteShippingAddressEvent)
+
+    fun process(event: CreateCartEvent)
+    fun process(event: UpdateCartEvent)
+
+    fun process(event: CreateCartItemEvent)
+    fun process(event: UpdateCartItemEvent)
+    fun process(event: DeleteCartItemEvent)
+
+    fun process(event: CreateCartItemCartEvent)
+    fun process(event: DeleteCartItemCartEvent)
 }

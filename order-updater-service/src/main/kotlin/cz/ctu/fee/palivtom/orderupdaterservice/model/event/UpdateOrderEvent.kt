@@ -4,8 +4,10 @@ import cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces.EventProcess
 import java.time.Instant
 
 data class UpdateOrderEvent(
-    val orderId: Long,
-    val userId: Long,
+    val id: Long,
+    val userId: String,
+    val cartId: Long,
+    val createdAt: Instant,
     val updatedAt: Instant?,
     val deletedAt: Instant?,
     override val eventMetadata: EventMetadata

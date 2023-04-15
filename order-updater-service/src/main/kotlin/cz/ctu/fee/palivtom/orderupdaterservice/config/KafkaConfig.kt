@@ -1,4 +1,4 @@
-package cz.ctu.fee.palivtom.orderupdaterservice.config.kafka
+package cz.ctu.fee.palivtom.orderupdaterservice.config
 
 import com.fasterxml.jackson.databind.JsonNode
 import cz.ctu.fee.palivtom.orderupdaterservice.model.kafka.TransactionRecordValue
@@ -49,5 +49,4 @@ class KafkaConfig(
             )
         }
     }
-
 }

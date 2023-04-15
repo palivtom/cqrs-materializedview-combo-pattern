@@ -1,22 +1,24 @@
 package cz.ctu.fee.palivtom.orderupdaterservice.processor
 
 import cz.ctu.fee.palivtom.orderupdaterservice.model.event.*
-import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.OrderService
-import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.ShippingAddressService
 import cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces.EventProcessor
+import cz.ctu.fee.palivtom.orderupdaterservice.service.interfaces.*
 import org.springframework.stereotype.Component
 
 @Component
 class EventProcessorImpl(
-    private val orderService: OrderService,
-    private val shippingAddressService: ShippingAddressService
+    private val orderViewService: OrderViewService,
+    private val shippingAddressService: ShippingAddressService,
+    private val cartViewService: CartViewService,
+    private val cartItemRawService: CartItemRawService,
+    private val cartItemViewService: CartItemViewService
 ) : EventProcessor {
     override fun process(event: CreateOrderEvent) {
-        orderService.createOrder(event)
+        orderViewService.createOrderView(event)
     }
 
     override fun process(event: UpdateOrderEvent) {
-        orderService.updateOrder(event)
+        orderViewService.updateOrderView(event)
     }
 
     override fun process(event: CreateShippingAddressEvent) {
@@ -29,5 +31,35 @@ class EventProcessorImpl(
 
     override fun process(event: DeleteShippingAddressEvent) {
         shippingAddressService.deleteShippingAddress(event)
+    }
+
+    override fun process(event: CreateCartEvent) {
+        cartViewService.createCartView(event)
+    }
+
+    override fun process(event: UpdateCartEvent) {
+        cartViewService.updateCartView(event)
+    }
+
+    override fun process(event: CreateCartItemEvent) {
+        cartItemRawService.createCartItemRaw(event)
+    }
+
+    override fun process(event: UpdateCartItemEvent) {
+        cartItemRawService.updateCartItemRaw(event)
+        cartItemViewService.updateCartItemView(event)
+    }
+
+    override fun process(event: DeleteCartItemEvent) {
+        cartItemRawService.deleteCartItemRaw(event)
+        cartItemViewService.deleteCartItemView(event)
+    }
+
+    override fun process(event: CreateCartItemCartEvent) {
+        cartItemViewService.createCartItemView(event)
+    }
+
+    override fun process(event: DeleteCartItemCartEvent) {
+        // nothing to do
     }
 }

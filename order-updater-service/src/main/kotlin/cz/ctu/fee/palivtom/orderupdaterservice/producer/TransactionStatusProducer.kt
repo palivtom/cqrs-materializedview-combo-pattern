@@ -20,7 +20,7 @@ class TransactionStatusProducer(
     @Value("\${kafka.topics.event.transaction.status}") private val eventTransactionStatusTopic: String
 ) {
     fun sendEventTransactionStatus(ixId: String, status: EventTransactionStatus) {
-        logger.debug { "Sending transaction status $status for transaction $ixId" }
+        logger.debug { "Sending transaction status '$status' for transaction '$ixId'." }
 
         kafkaTemplate.send(
             eventTransactionStatusTopic,

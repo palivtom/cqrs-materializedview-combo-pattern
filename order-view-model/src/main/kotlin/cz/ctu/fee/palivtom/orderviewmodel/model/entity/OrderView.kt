@@ -10,9 +10,13 @@ open class OrderView(
     open val id: Long = 0,
 
     @Column(name = "user_id")
-    open var userId: Long? = null,
+    open var userId: String,
 
-    @Column(name = "shipping_address_id")
+    @OneToOne(optional = false)
+    @JoinColumn(name = "cart_id")
+    open var cart: CartView,
+
+    @Column(name = "shipping_address_id", unique = true)
     open var shippingAddressId: Long? = null,
 
     @Column(name = "street")
@@ -27,12 +31,8 @@ open class OrderView(
     @Column(name = "country")
     open var country: String? = null,
 
-    @OneToMany
-    @JoinColumn(name = "order_id")
-    open var items: MutableList<OrderItemView> = mutableListOf(),
-
     @Column(name = "created_at")
-    open var createdAt: Instant? = null,
+    open var createdAt: Instant,
 
     @Column(name = "updated_at")
     open var updatedAt: Instant? = null,

@@ -10,8 +10,12 @@ open class Order(
     @Column(name = "id")
     open val id: Long = 0,
 
-    @Column(name = "user_id", nullable = false)
-    open var userId: Long,
+    @Column(name = "user_id", nullable = false, length = 36)
+    open var userId: String = "",
+
+    @OneToOne(optional = false)
+    @JoinColumn(name="cart_id")
+    open var cart: Cart? = null,
 
     @OneToOne(mappedBy = "order")
     open var shippingAddress: ShippingAddress? = null,
@@ -24,9 +28,8 @@ open class Order(
 
     @Column(name = "deleted_at")
     open var deletedAt: Instant? = null
-
 ) {
     override fun toString(): String {
-        return "Order(id=$id, userId=$userId, shippingAddress=$shippingAddress, createdAt=$createdAt, updatedAt=$updatedAt, deletedAt=$deletedAt)"
+        return "Order(id=$id, userId='$userId', cart=$cart, shippingAddress=$shippingAddress, createdAt=$createdAt, updatedAt=$updatedAt, deletedAt=$deletedAt)"
     }
 }

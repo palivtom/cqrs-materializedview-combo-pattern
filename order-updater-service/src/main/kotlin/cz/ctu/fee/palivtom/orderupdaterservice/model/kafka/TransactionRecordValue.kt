@@ -2,7 +2,6 @@ package cz.ctu.fee.palivtom.orderupdaterservice.model.kafka
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonValue
-import cz.ctu.fee.palivtom.orderupdaterservice.model.Transaction
 
 data class TransactionRecordValue(
     @JsonProperty("status")
@@ -20,7 +19,6 @@ data class TransactionRecordValue(
     enum class Status(
         private val value: String
     ) {
-
         BEGIN("BEGIN"),
         END("END");
 
@@ -38,8 +36,7 @@ data class TransactionRecordValue(
         val dataCollection: String
     )
 
-    fun toEntity() = Transaction(
-        id = id,
-        eventCount = eventCount!!
-    )
+    fun collectionsToMap(): Map<String, Int> = dataCollections
+        ?.associateBy({it.dataCollection}, {it.eventCount})
+        ?: emptyMap()
 }

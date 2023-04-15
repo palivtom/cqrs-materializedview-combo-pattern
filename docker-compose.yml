@@ -23,6 +23,8 @@ services:
     depends_on:
       - broker
       - pg-database
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
 
   order-updater-service:
     build: order-updater-service
@@ -35,10 +37,16 @@ services:
       spring.kafka.properties.group.id: order-updater-service
       spring.kafka.properties.schema.registry.url: http://schema-registry:8081
 
-      kafka.topics.event.transaction.status: event_transaction_status
+      kafka.allowed.collections: public.orders,public.shipping_addresses,public.carts,public.cart_items,public.cart_items_carts
+
       kafka.topics.order-service-db.orders: order-service.public.orders
       kafka.topics.order-service-db.shipping_addresses: order-service.public.shipping_addresses
+      kafka.topics.order-service-db.carts: order-service.public.carts
+      kafka.topics.order-service-db.cart_items: order-service.public.cart_items
+      kafka.topics.order-service-db.cart_items_carts: order-service.public.cart_items_carts
+
       kafka.topics.order-service-db.transactions: order-service.transaction
+      kafka.topics.event.transaction.status: event_transaction_status
     depends_on:
       - order-service
       - broker
@@ -140,6 +148,19 @@ services:
     healthcheck:
       test: "wget --quiet --tries=1 --spider http://localhost:8083 || exit 1"
 
+#  schema-registry-ui:
+#    image: landoop/schema-registry-ui:0.9.5
+#    restart: unless-stopped
+#    depends_on:
+#      - schema-registry
+#    ports:
+#      - "8084:8000"
+#    environment:
+#      SCHEMAREGISTRY_URL: http://schema-registry:8081
+#      PROXY: "true"
+#    healthcheck:
+#      test: "wget --quiet --tries=1 --spider http://localhost:8000 || exit 1"
+
   kafka-topics-ui:
     image: landoop/kafka-topics-ui:0.9.4
     container_name: kafka-topics-ui
@@ -150,19 +171,6 @@ services:
       - "8085:8000"
     environment:
       KAFKA_REST_PROXY_URL: http://kafka-rest-proxy:8082
-      PROXY: "true"
-    healthcheck:
-      test: "wget --quiet --tries=1 --spider http://localhost:8000 || exit 1"
-
-  schema-registry-ui:
-    image: landoop/schema-registry-ui:0.9.5
-    restart: unless-stopped
-    depends_on:
-      - schema-registry
-    ports:
-      - "8084:8000"
-    environment:
-      SCHEMAREGISTRY_URL: http://schema-registry:8081
       PROXY: "true"
     healthcheck:
       test: "wget --quiet --tries=1 --spider http://localhost:8000 || exit 1"

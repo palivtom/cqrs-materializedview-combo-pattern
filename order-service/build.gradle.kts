@@ -36,15 +36,17 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
 	implementation("org.springframework.boot:spring-boot-starter-web")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-actuator")
 
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.flywaydb:flyway-core:9.10.0")
+	implementation("org.flywaydb:flyway-core")
 	runtimeOnly("org.postgresql:postgresql")
 
 	implementation("org.springframework.kafka:spring-kafka")
 	implementation("io.confluent:kafka-json-schema-serializer:7.3.0")
 
-	implementation("io.github.microutils:kotlin-logging-jvm:3.0.4")
+	implementation("io.github.microutils:kotlin-logging-jvm:3.0.5")
 
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.kafka:spring-kafka-test")
