@@ -358,3 +358,20 @@ components:
           type: integer
         itemCount:
           type: integer
+        cartItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemView'
+
+    CartItemView:
+      type: object
+      readOnly: true
+      properties:
+        productNo:
+          type: string
+        quantity:
+          type: integer
+        originalPrice:
+          type: integer
+        discountPrice:
+          type: integer

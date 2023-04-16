@@ -13,6 +13,7 @@ import cz.ctu.fee.palivtom.orderservice.utils.mapper.CartViewMapper.toDto
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.transaction.support.TransactionTemplate
 
 private val logger = KotlinLogging.logger {}
 
@@ -24,26 +25,37 @@ class CartFacade(
     private val cartService: CartService,
     private val cartViewService: CartViewService,
     private val commandBlocker: CommandBlocker,
-    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor
+    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor,
+    private val transactionTemplate: TransactionTemplate
 ) {
     fun getCart(): CartViewDto {
-        return cartViewService.getCartView().toDto()
+        return transactionTemplate.execute {
+             cartViewService.getCartView().toDto()
+        }!!
     }
 
     fun addProduct(cartItemDto: CartItemDto): CartViewDto {
-        cartService.addToCart(cartItemDto.toEntity())
+        transactionTemplate.execute {
+            cartService.addToCart(cartItemDto.toEntity())
+        }
 
         propagateResponseOrThrow(ADD_TO_CART_TIMEOUT)
 
-        return cartViewService.getCartView().toDto()
+        return transactionTemplate.execute {
+            cartViewService.getCartView().toDto()
+        }!!
     }
 
     fun removeProduct(cartItemDto: CartItemDto): CartViewDto {
-        cartService.removeFromCart(cartItemDto.toEntity())
+        transactionTemplate.execute {
+            cartService.removeFromCart(cartItemDto.toEntity())
+        }
 
         propagateResponseOrThrow(REMOVE_FROM_CART_TIMEOUT)
 
-        return cartViewService.getCartView().toDto()
+        return transactionTemplate.execute {
+            cartViewService.getCartView().toDto()
+        }!!
     }
 
     private fun propagateResponseOrThrow(timeout: Long) {

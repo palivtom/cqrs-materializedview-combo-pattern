@@ -13,6 +13,7 @@ import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderViewMapper.toDto
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
+import org.springframework.transaction.support.TransactionTemplate
 
 private val logger = KotlinLogging.logger {}
 
@@ -25,38 +26,55 @@ class OrderFacade(
     private val orderService: OrderService,
     private val orderViewService: OrderViewService,
     private val commandBlocker: CommandBlocker,
-    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor
+    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor,
+    private val transactionTemplate: TransactionTemplate
 ) {
     fun getOrderById(orderId: Long): OrderViewDto {
-        return orderViewService.getOrderView(orderId).toDto()
+        return transactionTemplate.execute {
+            orderViewService.getOrderView(orderId).toDto()
+        }!!
     }
 
     fun getOrders(): List<OrderViewDto> {
-        return orderViewService.getOrders().map { it.toDto() }
+        return transactionTemplate.execute {
+            orderViewService.getOrders().map { it.toDto() }
+        }!!
     }
 
     fun createOrder(toCreate: OrderDto): OrderViewDto {
-        val resultOrderId = orderService.createOrder(toCreate.toEntity())
+        val resultOrderId = transactionTemplate.execute {
+            orderService.createOrder(toCreate.toEntity())
+        }!!
 
         propagateResponseOrThrow(CREATE_ORDER_TIMEOUT)
 
-        return orderViewService.getOrderView(resultOrderId).toDto()
+        return transactionTemplate.execute {
+            orderViewService.getOrderView(resultOrderId).toDto()
+        }!!
     }
 
     fun cancelOrder(orderId: Long): OrderViewDto {
-        orderService.cancelOrder(orderId)
+        transactionTemplate.execute {
+            orderService.cancelOrder(orderId)
+        }
 
         propagateResponseOrThrow(CANCEL_ORDER_TIMEOUT)
 
-        return orderViewService.getOrderView(orderId).toDto()
+        return transactionTemplate.execute {
+            orderViewService.getOrderView(orderId).toDto()
+        }!!
     }
 
     fun updateOrder(orderId: Long, orderDto: OrderDto): OrderViewDto {
-        orderService.updateOrder(orderId, orderDto.toEntity())
+        transactionTemplate.execute {
+            orderService.updateOrder(orderId, orderDto.toEntity())
+        }
 
         propagateResponseOrThrow(UPDATE_ORDER_TIMEOUT)
 
-        return orderViewService.getOrderView(orderId).toDto()
+        return transactionTemplate.execute {
+            orderViewService.getOrderView(orderId).toDto()
+        }!!
     }
 
     private fun propagateResponseOrThrow(timeout: Long) {

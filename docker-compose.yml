@@ -19,7 +19,7 @@ services:
       spring.kafka.properties.group.id: order-service
       spring.kafka.properties.schema.registry.url: http://schema-registry:8081
 
-      kafka.topics.event.transaction.status: event_transaction_status
+      kafka.topics.event.transaction.status: order-service.transaction_status
     depends_on:
       - broker
       - pg-database
