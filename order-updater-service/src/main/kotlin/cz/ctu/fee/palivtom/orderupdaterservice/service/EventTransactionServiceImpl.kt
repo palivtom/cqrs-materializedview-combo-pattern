@@ -14,6 +14,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.util.LinkedList
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -27,7 +28,7 @@ class EventTransactionServiceImpl(
 ) : EventTransactionService {
 
     private val locks = HashMap<String, ReentrantLock>()
-    private val transactions = HashMap<String, EventList>()
+    private val transactions = ConcurrentHashMap<String, EventList>()
     private val queue = LinkedList<String>()
 
     @Synchronized
@@ -76,7 +77,6 @@ class EventTransactionServiceImpl(
         val peekValue = queue.peek() ?: return
         val eventList = transactions[peekValue]
         if (eventList != null && eventList.isComplete()) {
-
             val pollValue = queue.poll()
             val pollEvents = pollEvents(pollValue)
             eventExecutor.execute { processEvents(pollValue, pollEvents) }
