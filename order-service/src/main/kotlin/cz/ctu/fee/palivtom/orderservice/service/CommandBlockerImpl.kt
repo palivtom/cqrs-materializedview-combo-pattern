@@ -1,6 +1,7 @@
 package cz.ctu.fee.palivtom.orderservice.service
 
 import cz.ctu.fee.palivtom.orderservice.exceptions.CommandBlockerException
+import cz.ctu.fee.palivtom.orderservice.service.interfaces.CommandBlocker
 import mu.KotlinLogging
 import org.springframework.stereotype.Service
 import java.util.concurrent.CompletableFuture

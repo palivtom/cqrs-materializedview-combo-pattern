@@ -6,14 +6,12 @@ Simplified component flow diagram: ![component flow diagram](attachments/compone
 ## Installation
 0. Make gradle executable
 ```bash
-chmod +x ./order-service/gradlew && \
-chmod +x ./order-updater-service/gradlew
+chmod +x ./gradlew
 ```
 
 1. Build both services
 ```bash
-./order-service/gradlew bootJar -p ./order-service && \
-./order-updater-service/gradlew bootJar -p ./order-updater-service
+./gradlew :order-service:bootJar :order-updater-service:bootJar :order-view-service:bootJar :transaction-grouper-service:bootJar 
 ```
 
 2. Start dockerization of the project

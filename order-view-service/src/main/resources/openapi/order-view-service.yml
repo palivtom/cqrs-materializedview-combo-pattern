@@ -1,0 +1,193 @@
+openapi: 3.0.3
+info:
+  description: Open API specification for Order service
+  version: 2.0.0
+  title: Order Api Service Specification
+tags:
+  - name: Order
+  - name: Cart
+paths:
+  /orders:
+    get:
+      tags:
+        - Order
+      summary: Get orders
+      operationId: getOrders
+      responses:
+        '200':
+          description: Returns list of order view
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrderView'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /orders/{orderId}:
+    get:
+      tags:
+        - Order
+      summary: Get order by id
+      operationId: getOrderById
+      parameters:
+        - in: path
+          required: true
+          name: orderId
+          description: Id of searched order
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Returns order view
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderView'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /cart:
+    get:
+      tags:
+        - Cart
+      summary: Get cart
+      operationId: getCart
+      responses:
+        '200':
+          description: Returns cart view
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CartView'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  responses:
+    BadRequest:
+      description: Indicates a nonspecific client error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+    Unauthorized:
+      description: Unauthorized request - sent when the client either provided invalid credentials.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Exception'
+
+  schemas:
+    Exception:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 400
+        title:
+          type: string
+          example: Wrong input parameter
+        message:
+          type: string
+          example: Wrong parameter for endpoint '/example/endpoint', wrong endpointId value.
+
+    OrderView:
+      type: object
+      readOnly: true
+      properties:
+        id:
+          type: integer
+          format: int64
+        userId:
+          type: string
+        cart:
+          $ref: '#/components/schemas/CartView'
+        shippingAddress:
+          $ref: '#/components/schemas/ShippingAddressView'
+        createdAt:
+          type: integer
+          format: int64
+        updatedAt:
+          type: integer
+          format: int64
+        deletedAt:
+          type: integer
+          format: int64
+          description: If order is canceled, this field is filled with date and time of canceling
+
+    CartView:
+      type: object
+      readOnly: true
+      properties:
+        userId:
+          type: string
+        priceSum:
+          type: integer
+        itemCount:
+          type: integer
+        cartItems:
+          type: array
+          items:
+            $ref: '#/components/schemas/CartItemView'
+
+    CartItemView:
+      type: object
+      readOnly: true
+      properties:
+        productNo:
+          type: string
+        quantity:
+          type: integer
+        originalPrice:
+          type: integer
+        discountPrice:
+          type: integer
+
+    ShippingAddressView:
+      type: object
+      readOnly: true
+      properties:
+        country:
+          type: string
+        city:
+          type: string
+        street:
+          type: string
+        zipCode:
+          type: string

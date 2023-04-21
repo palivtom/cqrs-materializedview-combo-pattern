@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "cz.ctu.fee.palivtom"
-version = "0.0.1-SNAPSHOT"
+version = "2.0"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
@@ -30,10 +30,13 @@ sourceSets {
 }
 
 dependencies {
-	implementation(project(":order-view-model"))
+	implementation("cz.ctu.fee.palivtom:order-view-model:2.0")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+
+	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
 
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-security")

@@ -1,6 +1,5 @@
 package cz.ctu.fee.palivtom.orderservice.config
 
-import cz.ctu.fee.palivtom.orderservice.config.db.HibernateTransactionInterceptor
 import org.springframework.stereotype.Component
 import org.springframework.ui.ModelMap
 import org.springframework.web.context.request.WebRequest

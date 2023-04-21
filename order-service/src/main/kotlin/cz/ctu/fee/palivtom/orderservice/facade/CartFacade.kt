@@ -1,15 +1,12 @@
 package cz.ctu.fee.palivtom.orderservice.facade
 
-import cz.ctu.fee.palivtom.orderservice.config.db.HibernateTransactionInterceptor
+import cz.ctu.fee.palivtom.orderservice.config.HibernateTransactionInterceptor
 import cz.ctu.fee.palivtom.orderservice.exceptions.CommandBlockerException
 import cz.ctu.fee.palivtom.orderservice.exceptions.runtime.ApiRuntimeException
 import cz.ctu.fee.palivtom.orderservice.model.CartItemDto
-import cz.ctu.fee.palivtom.orderservice.model.CartViewDto
-import cz.ctu.fee.palivtom.orderservice.service.CommandBlocker
-import cz.ctu.fee.palivtom.orderservice.service.command.interfaces.CartService
-import cz.ctu.fee.palivtom.orderservice.service.querry.interfaces.CartViewService
+import cz.ctu.fee.palivtom.orderservice.service.interfaces.CommandBlocker
+import cz.ctu.fee.palivtom.orderservice.service.interfaces.CartService
 import cz.ctu.fee.palivtom.orderservice.utils.mapper.CartItemMapper.toEntity
-import cz.ctu.fee.palivtom.orderservice.utils.mapper.CartViewMapper.toDto
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
@@ -23,39 +20,25 @@ private const val REMOVE_FROM_CART_TIMEOUT = 3000L
 @Component
 class CartFacade(
     private val cartService: CartService,
-    private val cartViewService: CartViewService,
     private val commandBlocker: CommandBlocker,
     private val hibernateTransactionInterceptor: HibernateTransactionInterceptor,
     private val transactionTemplate: TransactionTemplate
 ) {
-    fun getCart(): CartViewDto {
-        return transactionTemplate.execute {
-             cartViewService.getCartView().toDto()
-        }!!
-    }
 
-    fun addProduct(cartItemDto: CartItemDto): CartViewDto {
+    fun addProduct(cartItemDto: CartItemDto) {
         transactionTemplate.execute {
             cartService.addToCart(cartItemDto.toEntity())
         }
 
         propagateResponseOrThrow(ADD_TO_CART_TIMEOUT)
-
-        return transactionTemplate.execute {
-            cartViewService.getCartView().toDto()
-        }!!
     }
 
-    fun removeProduct(cartItemDto: CartItemDto): CartViewDto {
+    fun removeProduct(cartItemDto: CartItemDto) {
         transactionTemplate.execute {
             cartService.removeFromCart(cartItemDto.toEntity())
         }
 
         propagateResponseOrThrow(REMOVE_FROM_CART_TIMEOUT)
-
-        return transactionTemplate.execute {
-            cartViewService.getCartView().toDto()
-        }!!
     }
 
     private fun propagateResponseOrThrow(timeout: Long) {

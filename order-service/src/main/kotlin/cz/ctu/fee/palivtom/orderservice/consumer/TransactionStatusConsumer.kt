@@ -1,6 +1,6 @@
 package cz.ctu.fee.palivtom.orderservice.consumer
 
-import cz.ctu.fee.palivtom.orderservice.service.CommandBlocker
+import cz.ctu.fee.palivtom.orderservice.service.interfaces.CommandBlocker
 import cz.ctu.fee.palivtom.orderviewmodel.model.kafka.TransactionStatusKey
 import cz.ctu.fee.palivtom.orderviewmodel.model.kafka.TransactionStatusValue
 import mu.KotlinLogging
