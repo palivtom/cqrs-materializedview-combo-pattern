@@ -1,6 +1,6 @@
 package cz.ctu.fee.palivtom.orderviewservice.config
 
-import cz.ctu.fee.palivtom.orderviewservice.exceptions.AccessTokenException
+import cz.ctu.fee.palivtom.security.AccessTokenException
 import cz.ctu.fee.palivtom.orderviewservice.exceptions.runtime.ApiRuntimeException
 import cz.ctu.fee.palivtom.orderviewservice.model.ExceptionDto
 import mu.KotlinLogging

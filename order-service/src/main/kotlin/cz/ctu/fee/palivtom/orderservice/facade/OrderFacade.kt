@@ -1,36 +1,32 @@
 package cz.ctu.fee.palivtom.orderservice.facade
 
-import cz.ctu.fee.palivtom.orderservice.config.HibernateTransactionInterceptor
+import cz.ctu.fee.palivtom.orderservice.blocker.HibernateTransactionInterceptor
 import cz.ctu.fee.palivtom.orderservice.exceptions.CommandBlockerException
 import cz.ctu.fee.palivtom.orderservice.exceptions.runtime.ApiRuntimeException
 import cz.ctu.fee.palivtom.orderservice.model.IdLongDto
 import cz.ctu.fee.palivtom.orderservice.model.OrderDto
-import cz.ctu.fee.palivtom.orderservice.service.interfaces.CommandBlocker
-import cz.ctu.fee.palivtom.orderservice.service.interfaces.OrderService
+import cz.ctu.fee.palivtom.orderservice.blocker.CommandBlocker
+import cz.ctu.fee.palivtom.orderservice.service.OrderService
 import cz.ctu.fee.palivtom.orderservice.utils.mapper.IdLongMapper.toIdDto
 import cz.ctu.fee.palivtom.orderservice.utils.mapper.OrderMapper.toEntity
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Component
-import org.springframework.transaction.support.TransactionTemplate
 
 private val logger = KotlinLogging.logger {}
 
-private const val CREATE_ORDER_TIMEOUT = 3000L
-private const val CANCEL_ORDER_TIMEOUT = 3000L
-private const val UPDATE_ORDER_TIMEOUT = 3000L
+private const val CREATE_ORDER_TIMEOUT = 10000L
+private const val CANCEL_ORDER_TIMEOUT = 10000L
+private const val UPDATE_ORDER_TIMEOUT = 10000L
 
 @Component
 class OrderFacade(
     private val orderService: OrderService,
     private val commandBlocker: CommandBlocker,
-    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor,
-    private val transactionTemplate: TransactionTemplate
+    private val hibernateTransactionInterceptor: HibernateTransactionInterceptor
 ) {
     fun createOrder(toCreate: OrderDto): IdLongDto {
-        val resultOrderId = transactionTemplate.execute {
-            orderService.createOrder(toCreate.toEntity())
-        }!!
+        val resultOrderId = orderService.createOrder(toCreate.toEntity())
 
         propagateResponseOrThrow(CREATE_ORDER_TIMEOUT)
 
@@ -38,17 +34,13 @@ class OrderFacade(
     }
 
     fun cancelOrder(orderId: Long) {
-        transactionTemplate.execute {
-            orderService.cancelOrder(orderId)
-        }
+        orderService.cancelOrder(orderId)
 
         propagateResponseOrThrow(CANCEL_ORDER_TIMEOUT)
     }
 
     fun updateOrder(orderId: Long, orderDto: OrderDto) {
-        transactionTemplate.execute {
-            orderService.updateOrder(orderId, orderDto.toEntity())
-        }
+        orderService.updateOrder(orderId, orderDto.toEntity())
 
         propagateResponseOrThrow(UPDATE_ORDER_TIMEOUT)
     }

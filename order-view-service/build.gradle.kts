@@ -29,6 +29,7 @@ sourceSets {
 }
 
 dependencies {
+	implementation("cz.ctu.fee.palivtom:security:2.0")
 	implementation("cz.ctu.fee.palivtom:order-view-model:2.0")
 
 	implementation("org.jetbrains.kotlin:kotlin-reflect")

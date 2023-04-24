@@ -1,6 +1,7 @@
 package cz.ctu.fee.palivtom.orderupdaterservice.model.event
 
-import cz.ctu.fee.palivtom.orderupdaterservice.processor.interfaces.EventProcessor
+import cz.ctu.fee.palivtom.orderupdaterservice.model.EventMetadata
+import cz.ctu.fee.palivtom.orderupdaterservice.processor.EventProcessor
 
 data class DeleteCartItemCartEvent(
     val cartItemId: Long,

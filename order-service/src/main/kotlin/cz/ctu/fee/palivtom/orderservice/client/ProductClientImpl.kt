@@ -2,6 +2,9 @@ package cz.ctu.fee.palivtom.orderservice.client
 
 import org.springframework.stereotype.Service
 
+/**
+ * Simulates product service.
+ */
 @Service
 class ProductClientImpl : ProductClient {
     override fun getProductPrice(id: String): Int {

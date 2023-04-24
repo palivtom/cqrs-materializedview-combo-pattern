@@ -1,8 +1,8 @@
 package cz.ctu.fee.palivtom.orderservice.config
 
-import cz.ctu.fee.palivtom.orderservice.exceptions.AccessTokenException
 import cz.ctu.fee.palivtom.orderservice.exceptions.runtime.ApiRuntimeException
 import cz.ctu.fee.palivtom.orderservice.model.ExceptionDto
+import cz.ctu.fee.palivtom.security.AccessTokenException
 import mu.KotlinLogging
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

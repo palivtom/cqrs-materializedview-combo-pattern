@@ -1,7 +1,7 @@
 FROM alpine:latest
 
 # Add open JDK 17
-RUN apk update && apk upgrade && apk --update add openjdk17 tini && rm -rf /tmp/* /var/cache/apk/*
+RUN apk update && apk upgrade && apk --update add openjdk17 tini curl && rm -rf /tmp/* /var/cache/apk/*
 
 # Add user for the application
 RUN addgroup spring && adduser -D -u 666 -G spring spring

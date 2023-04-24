@@ -1,7 +1,7 @@
 package cz.ctu.fee.palivtom.orderviewservice.api
 
 import cz.ctu.fee.palivtom.orderviewservice.model.OrderViewDto
-import cz.ctu.fee.palivtom.orderviewservice.service.interfaces.OrderViewService
+import cz.ctu.fee.palivtom.orderviewservice.service.OrderViewService
 import cz.ctu.fee.palivtom.orderviewservice.utils.mapper.OrderViewMapper.toDto
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

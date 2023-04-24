@@ -1,18 +1,15 @@
 package cz.ctu.fee.palivtom.orderupdaterservice.utils.mapper
 
-import cz.ctu.fee.palivtom.orderupdaterservice.utils.mapper.KafkaMapper.toMetadata
-import cz.ctu.fee.palivtom.orderupdaterservice.model.event.EventMetadata
-import cz.ctu.fee.palivtom.orderupdaterservice.model.kafka.DebeziumPsqlWrapperValue
-import org.apache.kafka.clients.consumer.ConsumerRecord
+import cz.ctu.fee.palivtom.orderupdaterservice.model.EventMetadata
+import cz.ctu.fee.palivtom.transactiongroupermodel.kafka.model.TransactionGroupValue
 
 object EventMetadataMapper {
-    fun toEventMetadata(kafkaMessage: ConsumerRecord<out Any, out Any>, value: DebeziumPsqlWrapperValue<out Any>): EventMetadata {
+    fun TransactionGroupValue.Event.toEventMetadata(): EventMetadata {
         return EventMetadata(
-            txId = value.transaction!!.id,
-            txTotalOrder = value.transaction.totalOrder,
-            txCollectionOrder = value.transaction.collectionOrder,
-            timestamp = value.timestamp,
-            kafkaMetadata = kafkaMessage.toMetadata()
+            txId = txId,
+            txTotalOrder = txTotalOrder,
+            txCollectionOrder = txCollectionOrder,
+            timestamp = timestamp
         )
     }
 }

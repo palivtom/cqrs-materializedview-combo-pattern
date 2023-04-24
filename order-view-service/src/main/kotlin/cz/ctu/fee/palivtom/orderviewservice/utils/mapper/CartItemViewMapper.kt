@@ -1,6 +1,6 @@
 package cz.ctu.fee.palivtom.orderviewservice.utils.mapper
 
-import cz.ctu.fee.palivtom.orderviewmodel.model.entity.CartItemView
+import cz.ctu.fee.palivtom.orderviewmodel.model.CartItemView
 import cz.ctu.fee.palivtom.orderviewservice.model.CartItemViewDto
 
 object CartItemViewMapper {

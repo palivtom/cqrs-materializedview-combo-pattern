@@ -1,15 +1,15 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2023-04-15T16:59:44.272Z",
+  "__export_date": "2023-04-24T16:07:01.309Z",
   "__export_source": "insomnia.desktop.app:v2023.1.0",
   "resources": [
     {
       "_id": "req_60fecb207be049d18f0a61e1d07f41c9",
       "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
-      "modified": 1681501092107,
+      "modified": 1682352112188,
       "created": 1681396182084,
-      "url": "localhost:8080/cart",
+      "url": "localhost:8180/cart",
       "name": "Get cart",
       "description": "",
       "method": "GET",
@@ -46,7 +46,7 @@
     {
       "_id": "req_bfe88df734c542bb8dceb575d0af54eb",
       "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
-      "modified": 1681501115828,
+      "modified": 1682352121861,
       "created": 1681395868570,
       "url": "localhost:8080/cart/add",
       "name": "Add to cart",
@@ -83,7 +83,7 @@
     {
       "_id": "req_4d90cc9387b447efa1de3da6617a6c1c",
       "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
-      "modified": 1681396663512,
+      "modified": 1682263110002,
       "created": 1681395968159,
       "url": "localhost:8080/cart/remove",
       "name": "Remove from cart",
@@ -186,9 +186,9 @@
     {
       "_id": "req_8c967bbbeabf45779a46156317c1605b",
       "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
-      "modified": 1681503976564,
+      "modified": 1682276187278,
       "created": 1671815914602,
-      "url": "localhost:8080/orders/3",
+      "url": "localhost:8080/orders/1",
       "name": "Update order",
       "description": "",
       "method": "PUT",
@@ -223,9 +223,9 @@
     {
       "_id": "req_4ab15203daeb4ef2871a3f9089ab7475",
       "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
-      "modified": 1681239120121,
+      "modified": 1682105741011,
       "created": 1671811803149,
-      "url": "localhost:8080/orders/1",
+      "url": "localhost:8180/orders/1",
       "name": "Get order",
       "description": "",
       "method": "GET",
@@ -252,9 +252,9 @@
     {
       "_id": "req_70854dc95ff444bf9975352167a4393a",
       "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
-      "modified": 1681503301114,
+      "modified": 1682105186977,
       "created": 1671816056061,
-      "url": "localhost:8080/orders",
+      "url": "localhost:8180/orders",
       "name": "Get orders",
       "description": "",
       "method": "GET",
@@ -281,7 +281,7 @@
     {
       "_id": "req_6d01bea32a724195823635c1bdb268b5",
       "parentId": "wrk_0791647c70a1455cb5bcd53fe06588e0",
-      "modified": 1680197385143,
+      "modified": 1682202158326,
       "created": 1669983173415,
       "url": "localhost:8083/connectors",
       "name": "Register pq connnector",

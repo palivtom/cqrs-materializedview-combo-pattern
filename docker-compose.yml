@@ -5,6 +5,9 @@ services:
   ## SPRING BOOT APPS ##
   order-service:
     build: order-service
+    depends_on:
+      - broker
+      - pg-database
     ports:
       - "8080:8080"
     environment:
@@ -16,15 +19,16 @@ services:
       spring.kafka.properties.group.id: order-service
       spring.kafka.properties.schema.registry.url: http://schema-registry:8081
 
-      kafka.topics.event.transaction.status: order-service.transaction_status
-    depends_on:
-      - broker
-      - pg-database
+      kafka.topics.updater-status: order-service.updater-status
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
 
   order-updater-service:
     build: order-updater-service
+    depends_on:
+      - order-service
+      - broker
+      - pg-database
     environment:
       spring.datasource.url: jdbc:postgresql://pg-database:5432/order-view-service
       spring.datasource.username: postgres
@@ -34,35 +38,34 @@ services:
       spring.kafka.properties.group.id: order-updater-service
       spring.kafka.properties.schema.registry.url: http://schema-registry:8081
 
-      kafka.allowed.collections: public.orders,public.shipping_addresses,public.carts,public.cart_items,public.cart_items_carts
-
-      kafka.topics.order-service-db.orders: order-service.public.orders
-      kafka.topics.order-service-db.shipping_addresses: order-service.public.shipping_addresses
-      kafka.topics.order-service-db.carts: order-service.public.carts
-      kafka.topics.order-service-db.cart_items: order-service.public.cart_items
-      kafka.topics.order-service-db.cart_items_carts: order-service.public.cart_items_carts
-
-      kafka.topics.order-service-db.transactions: order-service.transaction
-      kafka.topics.event.transaction.status: order-service.transaction_status
-    depends_on:
-      - order-service
-      - broker
-      - pg-database
-    healthcheck:
-      test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
+      kafka.topics.transaction-grouper: order-service.transaction-group
+      kafka.topics.updater-status: order-service.updater-status
 
   order-view-service:
     build: order-view-service
+    depends_on:
+      - pg-database
     ports:
       - "8180:8080"
     environment:
       spring.datasource.url: jdbc:postgresql://pg-database:5432/order-view-service
       spring.datasource.username: postgres
       spring.datasource.password: postgres
-    depends_on:
-      - pg-database
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health | grep UP || exit 1"
+
+  transaction-grouper-service:
+    build: transaction-grouper-service
+    depends_on:
+      - broker
+    environment:
+      spring.kafka.bootstrap-servers: broker:29092
+      spring.kafka.properties.group.id: transaction-grouper-service
+      spring.kafka.properties.schema.registry.url: http://schema-registry:8081
+
+      kafka.topics.tables-prefix: order-service.public.*
+      kafka.topics.transaction-metadata: order-service.transaction
+      kafka.topics.output: order-service.transaction-group
 
   ## DATABASE ##
   pg-database:

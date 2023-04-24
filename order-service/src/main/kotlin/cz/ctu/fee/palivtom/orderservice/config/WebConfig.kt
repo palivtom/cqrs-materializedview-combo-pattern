@@ -1,5 +1,6 @@
 package cz.ctu.fee.palivtom.orderservice.config
 
+import cz.ctu.fee.palivtom.orderservice.blocker.HibernateRequestInterceptor
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry
