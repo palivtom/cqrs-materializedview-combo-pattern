@@ -1,0 +1,1 @@
+ab -n 12000 -c 300 -T application/json -p ./req_add_to_cart.json -H "accessToken: test-user" http://order-service:8080/cart/add > test_add_to_cart_5_output.txt
