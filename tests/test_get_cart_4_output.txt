@@ -10,33 +10,33 @@ Server Hostname:        order-view-service
 Server Port:            8080
 
 Document Path:          /cart
-Document Length:        170 bytes
+Document Length:        155 bytes
 
 Concurrency Level:      200
-Time taken for tests:   0.542 seconds
+Time taken for tests:   0.522 seconds
 Complete requests:      10000
 Failed requests:        0
-Total transferred:      5460000 bytes
-HTML transferred:       1700000 bytes
-Requests per second:    18437.46 [#/sec] (mean)
-Time per request:       10.847 [ms] (mean)
-Time per request:       0.054 [ms] (mean, across all concurrent requests)
-Transfer rate:          9830.91 [Kbytes/sec] received
+Total transferred:      5310000 bytes
+HTML transferred:       1550000 bytes
+Requests per second:    19166.78 [#/sec] (mean)
+Time per request:       10.435 [ms] (mean)
+Time per request:       0.052 [ms] (mean, across all concurrent requests)
+Transfer rate:          9939.02 [Kbytes/sec] received
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    1   1.8      1      18
-Processing:     1    5   2.4      5      34
-Waiting:        1    5   2.4      4      34
-Total:          1    7   3.3      6      49
+Connect:        0    1   1.8      1      17
+Processing:     1    5   2.8      5      37
+Waiting:        1    5   2.7      4      36
+Total:          1    7   4.0      5      50
 
 Percentage of the requests served within a certain time (ms)
-  50%      6
+  50%      5
   66%      6
   75%      7
-  80%      7
-  90%      9
-  95%     11
-  98%     18
-  99%     23
- 100%     49 (longest request)
+  80%      8
+  90%     10
+  95%     12
+  98%     20
+  99%     25
+ 100%     50 (longest request)

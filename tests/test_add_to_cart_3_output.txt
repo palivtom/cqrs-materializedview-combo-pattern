@@ -13,33 +13,33 @@ Document Path:          /cart/add
 Document Length:        0 bytes
 
 Concurrency Level:      100
-Time taken for tests:   5.760 seconds
+Time taken for tests:   5.501 seconds
 Complete requests:      1000
 Failed requests:        0
 Total transferred:      376000 bytes
 Total body sent:        218000
 HTML transferred:       0 bytes
-Requests per second:    173.61 [#/sec] (mean)
-Time per request:       576.018 [ms] (mean)
-Time per request:       5.760 [ms] (mean, across all concurrent requests)
-Transfer rate:          63.75 [Kbytes/sec] received
-                        36.96 kb/s sent
-                        100.70 kb/s total
+Requests per second:    181.77 [#/sec] (mean)
+Time per request:       550.145 [ms] (mean)
+Time per request:       5.501 [ms] (mean, across all concurrent requests)
+Transfer rate:          66.74 [Kbytes/sec] received
+                        38.70 kb/s sent
+                        105.44 kb/s total
 
 Connection Times (ms)
               min  mean[+/-sd] median   max
-Connect:        0    1   2.1      0      10
-Processing:   435  525  24.4    521     642
-Waiting:      425  524  24.4    521     642
-Total:        435  525  25.2    521     648
+Connect:        0    1   1.9      0       9
+Processing:   264  516  32.7    513     657
+Waiting:      255  516  32.7    513     657
+Total:        264  517  33.5    513     665
 
 Percentage of the requests served within a certain time (ms)
-  50%    521
-  66%    524
-  75%    529
-  80%    532
-  90%    555
-  95%    564
-  98%    616
-  99%    632
- 100%    648 (longest request)
+  50%    513
+  66%    528
+  75%    532
+  80%    533
+  90%    540
+  95%    577
+  98%    635
+  99%    645
+ 100%    665 (longest request)

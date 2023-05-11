@@ -1,0 +1,42 @@
+This is ApacheBench, Version 2.3 <$Revision: 1901567 $>
+Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
+Licensed to The Apache Software Foundation, http://www.apache.org/
+
+Benchmarking localhost (be patient)
+
+
+Server Software:        
+Server Hostname:        order-service
+Server Port:            8080
+
+Document Path:          /bench-test/cart
+Document Length:        155 bytes
+
+Concurrency Level:      100
+Time taken for tests:   0.124 seconds
+Complete requests:      1000
+Failed requests:        0
+Total transferred:      531000 bytes
+HTML transferred:       155000 bytes
+Requests per second:    8050.49 [#/sec] (mean)
+Time per request:       12.422 [ms] (mean)
+Time per request:       0.124 [ms] (mean, across all concurrent requests)
+Transfer rate:          4174.62 [Kbytes/sec] received
+
+Connection Times (ms)
+              min  mean[+/-sd] median   max
+Connect:        0    1   2.1      0      10
+Processing:     1   10   8.7      8      68
+Waiting:        1   10   8.7      8      68
+Total:          1   11   9.4      9      68
+
+Percentage of the requests served within a certain time (ms)
+  50%      9
+  66%     13
+  75%     15
+  80%     17
+  90%     23
+  95%     28
+  98%     37
+  99%     44
+ 100%     68 (longest request)
