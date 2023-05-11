@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RestController
 
 /**
- * TODO: Production not ready, remove this class.
  * This controller is used for benchmark testing only.
  */
 @RestController
