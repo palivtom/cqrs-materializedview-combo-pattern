@@ -1,3 +1,0 @@
-ab -n 1000 -c 100 -H "accessToken: test-user" http://order-view-service:8080/cart > test_get_cart_3_output.txt
-
-ab -n 1000 -c 100 -H "accessToken: test-user" http://order-service:8080/bench-test/cart > test_get_cart_3_output2.txt
